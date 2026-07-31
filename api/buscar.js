@@ -1,4 +1,6 @@
 export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', 'https://vizta.lat');
+  res.setHeader('Access-Control-Allow-Methods', 'GET');
   const { q } = req.query;
   if (!q) return res.status(400).json({ error: 'Falta el parámetro q' });
 
