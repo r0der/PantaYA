@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlfaBeta Express</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #f2f4f7;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    padding: 24px;
+    width: 100%;
+    max-width: 420px;
+  }
+  h1 {
+    font-size: 20px;
+    margin: 0 0 4px;
+    color: #1a2233;
+  }
+  p.subtitle {
+    margin: 0 0 20px;
+    color: #6b7280;
+    font-size: 14px;
+  }
+  .buscador {
+    display: flex;
+    gap: 8px;
+  }
+  input {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    font-size: 15px;
+  }
+  input:focus { outline: 2px solid #2563eb; border-color: transparent; }
+  button {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 0 18px;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  button:disabled { background: #9ca3af; cursor: default; }
+  #resultado {
+    margin-top: 20px;
+  }
+  .producto {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .producto h2 {
+    margin: 0 0 4px;
+    font-size: 17px;
+    color: #111827;
+  }
+  .precio {
+    font-size: 24px;
+    font-weight: 700;
+    color: #059669;
+    margin: 10px 0 0;
+  }
+  .pami {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #7c3aed;
+    font-weight: 600;
+  }
+  .error {
+    color: #dc2626;
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 0;
+  }
+  .loading {
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+    padding: 10px 0;
+  }
+  .copiar {
+    margin-top: 12px;
+    background: none;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: auto;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>💊 AlfaBeta Express</h1>
+  <p class="subtitle">Buscá un medicamento y obtené su precio al instante</p>
+
+  <div class="buscador">
+    <input type="text" id="q" placeholder="Ej: Acemuk L" autocomplete="off">
+    <button id="btnBuscar">Buscar</button>
+  </div>
+
+  <div id="resultado"></div>
+</div>
+
+<script>
+  const input = document.getElementById('q');
+  const btn = document.getElementById('btnBuscar');
+  const resultado = document.getElementById('resultado');
+
+  async function buscar() {
+    const q = input.value.trim();
+    if (!q) return;
+
+    btn.disabled = true;
+    resultado.innerHTML = '<p class="loading">Buscando...</p>';
+
+    try {
+      const res = await fetch('/api/buscar?q=' + encodeURIComponent(q));
+      const data = await res.json();
+
+      if (!res.ok) {
+        resultado.innerHTML = '<p class="error">' + data.error + '</p>';
+        return;
+      }
+
+      resultado.innerHTML = `
+        <div class="producto">
+          <h2>${data.nombre}</h2>
+          <p class="precio">${data.precio}</p>
+          ${data.precioPami ? `<p class="pami">💜 PAMI: ${data.precioPami}</p>` : ''}
+          <button class="copiar" onclick="copiarPrecio('${data.precio}')">📋 Copiar precio</button>
+        </div>
+      `;
+    } catch (err) {
+      resultado.innerHTML = '<p class="error">Error de conexión. Probá de nuevo.</p>';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function copiarPrecio(precio) {
+    navigator.clipboard.writeText(precio);
+  }
+
+  btn.addEventListener('click', buscar);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') buscar();
+  });
+</script>
+
+</body>
+</html>
