@@ -130,7 +130,7 @@
     resultado.innerHTML = '<p class="loading">Buscando...</p>';
 
     try {
-      const res = await fetch('/api/buscar?q=' + encodeURIComponent(q));
+      const res = await fetch('https://vizta-jet.vercel.app/api/buscar?q=' + encodeURIComponent(q));
       const data = await res.json();
 
       if (!res.ok) {
