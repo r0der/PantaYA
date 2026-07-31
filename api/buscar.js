@@ -17,6 +17,11 @@ export default async function handler(req, res) {
     }
 
     const html = await response.text();
+
+    if (req.query.debug) {
+      return res.status(200).json({ html: html });
+    }
+
     const data = extraerDatos(html);
 
     if (!data.precio) {
