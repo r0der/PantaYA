@@ -1,6 +1,7 @@
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://vizta.lat');
   res.setHeader('Access-Control-Allow-Methods', 'GET');
+
   const { q } = req.query;
   if (!q) return res.status(400).json({ error: 'Falta el parámetro q' });
 
@@ -17,11 +18,6 @@ export default async function handler(req, res) {
     }
 
     const html = await response.text();
-
-    if (req.query.debug) {
-      return res.status(200).json({ html: html });
-    }
-
     const data = extraerDatos(html);
 
     if (!data.precio) {
@@ -30,7 +26,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json(data);
   } catch (err) {
-    return res.status(500).json({ error: 'VERSION NUEVA - ' + err.message });
+    return res.status(500).json({ error: 'Error al consultar Alfa Beta.', detalle: err.message });
   }
 }
 
@@ -44,15 +40,52 @@ function normalizar(texto) {
     .replace(/\s+/g, '-');
 }
 
-function extraerDatos(html) {
-  const nombreMatch = html.match(/<h1[^>]*>([^<]+)<\/h1>/i);
-  const precioMatch = html.match(/\$\s?([\d.]+,\d{2})/);
-  const pamiMatch = html.match(/PAMI[\s\S]{0,200}?\$\s?([\d.]+,\d{2})/i);
+function limpiarComentarios(html) {
+  return html.replace(/<!--[\s\S]*?-->/g, '');
+}
 
-  return {
-    nombre: nombreMatch ? nombreMatch[1].trim() : null,
-    precio: precioMatch ? `$${precioMatch[1]}` : null,
-    precioPami: pamiMatch ? `$${pamiMatch[1]}` : null,
-    fuente: 'alfabeta.net'
-  };
-}  
+function formatearPrecio(precioNumerico) {
+  const num = parseFloat(precioNumerico);
+  if (isNaN(num)) return null;
+  return '$' + num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function extraerDatos(htmlOriginal) {
+  const html = limpiarComentarios(htmlOriginal);
+
+  let nombre = null, laboratorio = null, precio = null, droga = null, accion = null;
+
+  // Fuente principal: el bloque de datos estructurados (JSON-LD), es el más confiable
+  const ldMatch = htmlOriginal.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+  if (ldMatch) {
+    try {
+      const json = JSON.parse(ldMatch[1]);
+      nombre = json.name || null;
+      laboratorio = (json.brand && json.brand.name) || null;
+      if (json.offers && json.offers.length > 0) {
+        precio = formatearPrecio(json.offers[0].price);
+      }
+      if (json.additionalProperty) {
+        const mono = json.additionalProperty.find(p => p.name === 'Monodroga');
+        const acc = json.additionalProperty.find(p => p.name === 'Accion terapeutica');
+        droga = mono ? mono.value : null;
+        accion = acc ? acc.value : null;
+      }
+    } catch (e) {
+      // si el JSON-LD falla, seguimos con el respaldo de abajo
+    }
+  }
+
+  // Respaldo si no vino el precio por JSON-LD
+  if (!precio) {
+    const precioMatch = html.match(/class="tdprecio">\$([\d.,]+)/);
+    precio = precioMatch ? `$${precioMatch[1]}` : null;
+  }
+
+  // Precio PAMI: buscamos específicamente dentro de la sección "PAMI", no cualquier "$" suelto
+  let precioPami = null;
+  const pamiMatch = html.match(/obrasn"><b>PAMI<\/b>[\s\S]{0,300}?class="importesi">[\s\S]*?\$([\d.,]+)/i);
+  if (pamiMatch) precioPami = `$${pamiMatch[1]}`;
+
+  return { nombre, laboratorio, droga, accion, precio, precioPami, fuente: 'alfabeta.net' };
+}
