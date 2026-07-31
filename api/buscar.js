@@ -45,7 +45,7 @@ function extraerDatos(html) {
   const pamiMatch = html.match(/PAMI[\s\S]{0,200}?\$\s?([\d.]+,\d{2})/i);
 
   return {
-    nombre: nombreMatch ? nombreMatch[1].trim() : texto,
+    nombre: nombreMatch ? nombreMatch[1].trim() : null,
     precio: precioMatch ? `$${precioMatch[1]}` : null,
     precioPami: pamiMatch ? `$${pamiMatch[1]}` : null,
     fuente: 'alfabeta.net'
