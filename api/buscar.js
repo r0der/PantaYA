@@ -19,6 +19,10 @@ export default async function handler(req, res) {
 
     const buffer = await response.arrayBuffer();
     const html = new TextDecoder('iso-8859-1').decode(buffer);
+    if (req.query.debug) {
+      return res.status(200).json({ html: html });
+    }
+
     const data = extraerDatos(html);
 
     if (!data.presentaciones || data.presentaciones.length === 0) {
