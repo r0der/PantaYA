@@ -53,9 +53,9 @@ function formatearPrecio(precioNumerico) {
 function extraerDatos(htmlOriginal) {
   const html = limpiarComentarios(htmlOriginal);
 
-  let nombre = null, laboratorio = null, precio = null, droga = null, accion = null;
+  let nombre = null, laboratorio = null, droga = null, accion = null;
+  let presentaciones = [];
 
-  // Fuente principal: el bloque de datos estructurados (JSON-LD), es el más confiable
   const ldMatch = htmlOriginal.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
   if (ldMatch) {
     try {
@@ -63,7 +63,10 @@ function extraerDatos(htmlOriginal) {
       nombre = json.name || null;
       laboratorio = (json.brand && json.brand.name) || null;
       if (json.offers && json.offers.length > 0) {
-        precio = formatearPrecio(json.offers[0].price);
+        presentaciones = json.offers.map(o => ({
+          presentacion: o.name || null,
+          precio: formatearPrecio(o.price)
+        }));
       }
       if (json.additionalProperty) {
         const mono = json.additionalProperty.find(p => p.name === 'Monodroga');
@@ -71,21 +74,13 @@ function extraerDatos(htmlOriginal) {
         droga = mono ? mono.value : null;
         accion = acc ? acc.value : null;
       }
-    } catch (e) {
-      // si el JSON-LD falla, seguimos con el respaldo de abajo
-    }
+    } catch (e) {}
   }
 
-  // Respaldo si no vino el precio por JSON-LD
-  if (!precio) {
-    const precioMatch = html.match(/class="tdprecio">\$([\d.,]+)/);
-    precio = precioMatch ? `$${precioMatch[1]}` : null;
-  }
-
-  // Precio PAMI: buscamos específicamente dentro de la sección "PAMI", no cualquier "$" suelto
+  // Precio PAMI (solo lo asociamos a la primera presentación por simplicidad)
   let precioPami = null;
   const pamiMatch = html.match(/obrasn"><b>PAMI<\/b>[\s\S]{0,300}?class="importesi">[\s\S]*?\$([\d.,]+)/i);
   if (pamiMatch) precioPami = `$${pamiMatch[1]}`;
 
-  return { nombre, laboratorio, droga, accion, precio, precioPami, fuente: 'alfabeta.net' };
+  return { nombre, laboratorio, droga, accion, presentaciones, precioPami, fuente: 'alfabeta.net' };
 }
