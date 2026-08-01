@@ -51,6 +51,30 @@ function formatearPrecio(precioNumerico) {
   return '$' + num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+function extraerCoberturas(bloque) {
+  const coberturas = [];
+  const partes = bloque.split(/(?=<td class="obrasn")/).slice(1);
+
+  partes.forEach(parte => {
+    const nombreMatch = parte.match(/<td class="obrasn"[^>]*><b>([^<]+)<\/b><\/td><td class="obrasd"[^>]*>([^<]*)<\/td>/);
+    if (!nombreMatch) return;
+
+    const nombre = nombreMatch[1].trim();
+    const descripcion = nombreMatch[2].trim() || null;
+
+    const importes = [];
+    const importeRegex = /(OS|AF)&nbsp;<b>\$([\d.,]+)<\/b>/g;
+    let m;
+    while ((m = importeRegex.exec(parte)) !== null) {
+      importes.push({ tipo: m[1], precio: `$${m[2]}` });
+    }
+
+    coberturas.push({ nombre, descripcion, importes });
+  });
+
+  return coberturas;
+}
+
 function extraerDatos(htmlOriginal) {
   const html = limpiarComentarios(htmlOriginal);
   let nombre = null, laboratorio = null, droga = null, accion = null, descripcion = null;
@@ -75,19 +99,17 @@ function extraerDatos(htmlOriginal) {
     descripcion = resumenMatch[1].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
   }
 
-  // Partimos el HTML en un bloque por cada presentación (cada uno arranca en su "tddesc")
-  const bloques = html.split(/(?=<td class="tddesc">)/).slice(1);
+  const bloques = html.split(/(?=<td class="tddesc")/).slice(1);
 
   const presentaciones = bloques.map(bloque => {
-    const descMatch = bloque.match(/<td class="tddesc">([^<]*)<\/td>/);
-    const precioMatch = bloque.match(/<td class="tdprecio">\$([\d.,]+)<\/td>/);
-    // Como cada bloque ya está acotado a UNA sola presentación, este PAMI es el que corresponde a ella
-    const pamiMatch = bloque.match(/obrasn"><b>PAMI<\/b>[\s\S]*?importesi">[\s\S]*?\$([\d.,]+)/i);
+    const descMatch = bloque.match(/<td class="tddesc"[^>]*>([^<]*)/);
+    const precioMatch = bloque.match(/<td class="tdprecio"[^>]*>\$([\d.,]+)/);
+    const coberturas = extraerCoberturas(bloque);
 
     return {
       presentacion: descMatch ? descMatch[1].trim() : null,
       precio: precioMatch ? `$${precioMatch[1]}` : null,
-      precioPami: pamiMatch ? `$${pamiMatch[1]}` : null
+      coberturas
     };
   }).filter(p => p.precio);
 
