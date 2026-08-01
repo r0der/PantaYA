@@ -33,6 +33,7 @@
     font-size: 14px;
   }
   .buscador {
+    position: relative;
     display: flex;
     gap: 8px;
   }
@@ -42,6 +43,7 @@
     border-radius: 10px;
     border: 1px solid #d1d5db;
     font-size: 15px;
+    width: 100%;
   }
   input:focus { outline: 2px solid #2563eb; border-color: transparent; }
   button {
@@ -54,6 +56,29 @@
     cursor: pointer;
   }
   button:disabled { background: #9ca3af; cursor: default; }
+  #sugerencias {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-top: 4px;
+    max-height: 220px;
+    overflow-y: auto;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: none;
+  }
+  #sugerencias div {
+    padding: 10px 14px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  #sugerencias div:hover {
+    background: #f2f4f7;
+  }
   #resultado {
     margin-top: 20px;
   }
@@ -110,58 +135,29 @@
   <p class="subtitle">Buscá un medicamento y obtené su precio al instante</p>
 
   <div class="buscador">
-    <input type="text" id="q" placeholder="Ej: Acemuk L" autocomplete="off">
+    <input type="text" id="q" placeholder="Ej: Acemuk" autocomplete="off">
     <button id="btnBuscar">Buscar</button>
+    <div id="sugerencias"></div>
   </div>
 
   <div id="resultado"></div>
 </div>
 
 <script>
+  const API_BASE = 'https://vizta-jet.vercel.app';
+
   const input = document.getElementById('q');
   const btn = document.getElementById('btnBuscar');
   const resultado = document.getElementById('resultado');
+  const sugerenciasBox = document.getElementById('sugerencias');
 
-  async function buscar() {
+  let debounceTimer;
+
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
     const q = input.value.trim();
-    if (!q) return;
-
-    btn.disabled = true;
-    resultado.innerHTML = '<p class="loading">Buscando...</p>';
-
-    try {
-      const res = await fetch('https://vizta-jet.vercel.app/api/buscar?q=' + encodeURIComponent(q));
-      const data = await res.json();
-
-      if (!res.ok) {
-        resultado.innerHTML = '<p class="error">' + data.error + '</p>';
-        return;
-      }
-
-      resultado.innerHTML = `
-        <div class="producto">
-          <h2>${data.nombre}</h2>
-          <p class="precio">${data.precio}</p>
-          ${data.precioPami ? `<p class="pami">💜 PAMI: ${data.precioPami}</p>` : ''}
-          <button class="copiar" onclick="copiarPrecio('${data.precio}')">📋 Copiar precio</button>
-        </div>
-      `;
-    } catch (err) {
-      resultado.innerHTML = '<p class="error">Error de conexión. Probá de nuevo.</p>';
-    } finally {
-      btn.disabled = false;
+    if (q.length < 2) {
+      sugerenciasBox.style.display = 'none';
+      return;
     }
-  }
-
-  function copiarPrecio(precio) {
-    navigator.clipboard.writeText(precio);
-  }
-
-  btn.addEventListener('click', buscar);
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') buscar();
-  });
-</script>
-
-</body>
-</html>
+    debounceTimer = setTimeout(() => cargarSugerencias(q),
