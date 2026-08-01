@@ -17,7 +17,8 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: 'No encontrado. Probá con el nombre comercial exacto (ej: "acemuk l").' });
     }
 
-    const html = await response.text();
+    const buffer = await response.arrayBuffer();
+    const html = new TextDecoder('iso-8859-1').decode(buffer);
     const data = extraerDatos(html);
 
     if (!data.presentaciones || data.presentaciones.length === 0) {
