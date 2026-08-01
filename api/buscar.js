@@ -52,9 +52,7 @@ function formatearPrecio(precioNumerico) {
 
 function extraerDatos(htmlOriginal) {
   const html = limpiarComentarios(htmlOriginal);
-
-  let nombre = null, laboratorio = null, droga = null, accion = null;
-  let presentaciones = [];
+  let nombre = null, laboratorio = null, droga = null, accion = null, descripcion = null;
 
   const ldMatch = htmlOriginal.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
   if (ldMatch) {
@@ -62,12 +60,6 @@ function extraerDatos(htmlOriginal) {
       const json = JSON.parse(ldMatch[1]);
       nombre = json.name || null;
       laboratorio = (json.brand && json.brand.name) || null;
-      if (json.offers && json.offers.length > 0) {
-        presentaciones = json.offers.map(o => ({
-          presentacion: o.name || null,
-          precio: formatearPrecio(o.price)
-        }));
-      }
       if (json.additionalProperty) {
         const mono = json.additionalProperty.find(p => p.name === 'Monodroga');
         const acc = json.additionalProperty.find(p => p.name === 'Accion terapeutica');
@@ -77,19 +69,26 @@ function extraerDatos(htmlOriginal) {
     } catch (e) {}
   }
 
-  // Precio PAMI (solo lo asociamos a la primera presentación por simplicidad)
-  let precioPami = null;
-  const pamiMatch = html.match(/obrasn"><b>PAMI<\/b>[\s\S]{0,300}?class="importesi">[\s\S]*?\$([\d.,]+)/i);
-  if (pamiMatch) precioPami = `$${pamiMatch[1]}`;
-
   const resumenMatch = html.match(/<div class="producto-resumen"[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/);
-  let descripcion = null;
   if (resumenMatch) {
-    descripcion = resumenMatch[1]
-      .replace(/<[^>]+>/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
+    descripcion = resumenMatch[1].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
   }
 
-  return { nombre, laboratorio, droga, accion, descripcion, presentaciones, precioPami, fuente: 'alfabeta.net' };
+  // Partimos el HTML en un bloque por cada presentación (cada uno arranca en su "tddesc")
+  const bloques = html.split(/(?=<td class="tddesc">)/).slice(1);
+
+  const presentaciones = bloques.map(bloque => {
+    const descMatch = bloque.match(/<td class="tddesc">([^<]*)<\/td>/);
+    const precioMatch = bloque.match(/<td class="tdprecio">\$([\d.,]+)<\/td>/);
+    // Como cada bloque ya está acotado a UNA sola presentación, este PAMI es el que corresponde a ella
+    const pamiMatch = bloque.match(/obrasn"><b>PAMI<\/b>[\s\S]*?importesi">[\s\S]*?\$([\d.,]+)/i);
+
+    return {
+      presentacion: descMatch ? descMatch[1].trim() : null,
+      precio: precioMatch ? `$${precioMatch[1]}` : null,
+      precioPami: pamiMatch ? `$${pamiMatch[1]}` : null
+    };
+  }).filter(p => p.precio);
+
+  return { nombre, laboratorio, droga, accion, descripcion, presentaciones, fuente: 'alfabeta.net' };
 }
