@@ -160,4 +160,81 @@
       sugerenciasBox.style.display = 'none';
       return;
     }
-    debounceTimer = setTimeout(() => cargarSugerencias(q),
+    debounceTimer = setTimeout(() => cargarSugerencias(q), 250);
+  });
+
+  async function cargarSugerencias(q) {
+    try {
+      const res = await fetch(API_BASE + '/api/sugerencias?q=' + encodeURIComponent(q));
+      const data = await res.json();
+
+      if (!data.resultados || data.resultados.length === 0) {
+        sugerenciasBox.style.display = 'none';
+        return;
+      }
+
+      sugerenciasBox.innerHTML = data.resultados
+        .map(nombre => `<div onclick="elegirSugerencia('${nombre.replace(/'/g, "\\'")}')">${nombre}</div>`)
+        .join('');
+      sugerenciasBox.style.display = 'block';
+    } catch (err) {
+      sugerenciasBox.style.display = 'none';
+    }
+  }
+
+  function elegirSugerencia(nombre) {
+    input.value = nombre;
+    sugerenciasBox.style.display = 'none';
+    buscar();
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.buscador')) {
+      sugerenciasBox.style.display = 'none';
+    }
+  });
+
+  async function buscar() {
+    const q = input.value.trim();
+    if (!q) return;
+
+    sugerenciasBox.style.display = 'none';
+    btn.disabled = true;
+    resultado.innerHTML = '<p class="loading">Buscando...</p>';
+
+    try {
+      const res = await fetch(API_BASE + '/api/buscar?q=' + encodeURIComponent(q));
+      const data = await res.json();
+
+      if (!res.ok) {
+        resultado.innerHTML = '<p class="error">' + data.error + '</p>';
+        return;
+      }
+
+      resultado.innerHTML = `
+        <div class="producto">
+          <h2>${data.nombre}</h2>
+          <p class="precio">${data.precio}</p>
+          ${data.precioPami ? `<p class="pami">💜 PAMI: ${data.precioPami}</p>` : ''}
+          <button class="copiar" onclick="copiarPrecio('${data.precio}')">📋 Copiar precio</button>
+        </div>
+      `;
+    } catch (err) {
+      resultado.innerHTML = '<p class="error">Error de conexión. Probá de nuevo.</p>';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function copiarPrecio(precio) {
+    navigator.clipboard.writeText(precio);
+  }
+
+  btn.addEventListener('click', buscar);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') buscar();
+  });
+</script>
+
+</body>
+</html>
