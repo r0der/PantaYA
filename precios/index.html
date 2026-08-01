@@ -221,10 +221,15 @@
       resultado.innerHTML = `
         <div class="producto">
           <h2>${data.nombre}</h2>
+          ${data.laboratorio ? `<p style="font-size:13px; color:#6b7280; margin:0 0 8px;">${data.laboratorio}</p>` : ''}
+          ${data.droga ? `<p style="font-size:13px; color:#374151; margin:0 0 4px;"><b>Droga:</b> ${data.droga}</p>` : ''}
+          ${data.accion ? `<p style="font-size:13px; color:#374151; margin:0 0 10px;"><b>Acción:</b> ${data.accion}</p>` : ''}
           ${listaPresentaciones}
           ${data.precioPami ? `<p class="pami">💜 PAMI: ${data.precioPami}</p>` : ''}
+          ${data.descripcion ? `<p style="font-size:12px; color:#9ca3af; margin-top:12px; line-height:1.4;">${data.descripcion}</p>` : ''}
         </div>
       `;
+     
     } catch (err) {
       resultado.innerHTML = '<p class="error">Error de conexión. Probá de nuevo.</p>';
     } finally {
