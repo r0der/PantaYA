@@ -60,7 +60,7 @@ function extraerCoberturas(bloque) {
   const partes = bloque.split(/(?=<td class="obrasn")/).slice(1);
 
   partes.forEach(parte => {
-    const nombreMatch = parte.match(/<td class="obrasn"[^>]*><b>([^<]+)<\/b><\/td><td class="obrasd"[^>]*>([^<]*)<\/td>/);
+    const nombreMatch = parte.match(/<td class="obrasn"[^>]*><b>([^<]+)<\/b><\/td>\s*<td class="obrasd"[^>]*>([^<]*)<\/td>/);
     if (!nombreMatch) return;
 
     const nombre = nombreMatch[1].trim();
