@@ -211,12 +211,18 @@
         return;
       }
 
+      const listaPresentaciones = (data.presentaciones || []).map(p => `
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f0f0f0;">
+          <span style="font-size:14px; color:#374151;">${p.presentacion || 'Presentación'}</span>
+          <span style="font-weight:700; color:#059669;">${p.precio}</span>
+        </div>
+      `).join('');
+
       resultado.innerHTML = `
         <div class="producto">
           <h2>${data.nombre}</h2>
-          <p class="precio">${data.precio}</p>
+          ${listaPresentaciones}
           ${data.precioPami ? `<p class="pami">💜 PAMI: ${data.precioPami}</p>` : ''}
-          <button class="copiar" onclick="copiarPrecio('${data.precio}')">📋 Copiar precio</button>
         </div>
       `;
     } catch (err) {
