@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     const html = await response.text();
     const data = extraerDatos(html);
 
-    if (!data.precio) {
+    if (!data.presentaciones || data.presentaciones.length === 0) {
       return res.status(404).json({ error: 'No se pudo extraer el precio de esa página.' });
     }
 
