@@ -82,5 +82,14 @@ function extraerDatos(htmlOriginal) {
   const pamiMatch = html.match(/obrasn"><b>PAMI<\/b>[\s\S]{0,300}?class="importesi">[\s\S]*?\$([\d.,]+)/i);
   if (pamiMatch) precioPami = `$${pamiMatch[1]}`;
 
-  return { nombre, laboratorio, droga, accion, presentaciones, precioPami, fuente: 'alfabeta.net' };
+  const resumenMatch = html.match(/<div class="producto-resumen"[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/);
+  let descripcion = null;
+  if (resumenMatch) {
+    descripcion = resumenMatch[1]
+      .replace(/<[^>]+>/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  return { nombre, laboratorio, droga, accion, descripcion, presentaciones, precioPami, fuente: 'alfabeta.net' };
 }
