@@ -120,16 +120,38 @@
     padding: 10px 0;
   }
 
-  .chip{
-    display:inline-block;
-    background:#f2f2f7;
-    border:1px solid #e5e5e7;
-    border-radius:999px;
-    padding:4px 10px;
-    margin-right:6px;
-    margin-top:8px;
-    font-size:12px;
-    color:#4b5563;
+  .input-wrapper{
+      position:relative;
+      flex:1;
+  }
+
+  .input-wrapper input{
+      width:100%;
+      padding-right:40px;
+  }
+
+  #btnLimpiar{
+
+      position:absolute;
+
+      right:14px;
+      top:50%;
+
+      transform:translateY(-50%);
+
+      font-size:18px;
+
+      color:#999;
+
+      cursor:pointer;
+
+      display:none;
+
+      user-select:none;
+  }
+
+  #btnLimpiar:hover{
+      color:#333;
   }
 
 </style>
@@ -143,10 +165,24 @@
 <p class="subtitle" style="margin:0 0 22px;">Precios y datos de medicamentos, al instante</p>
 
   <div class="buscador">
-    <input type="text" id="q" placeholder="Ej: Acemuk" autocomplete="off">
+
+    <div class="input-wrapper">
+
+        <input
+            type="text"
+            id="q"
+            placeholder="Ej: Acemuk"
+            autocomplete="off">
+
+        <span id="btnLimpiar">✕</span>
+
+    </div>
+
     <button id="btnBuscar">Buscar</button>
+
     <div id="sugerencias"></div>
-  </div>
+
+</div>
 
   <div id="resultado"></div>
 </div>
@@ -158,11 +194,15 @@
   const btn = document.getElementById('btnBuscar');
   const resultado = document.getElementById('resultado');
   const sugerenciasBox = document.getElementById('sugerencias');
+  const btnLimpiar = document.getElementById('btnLimpiar');
 
   let debounceTimer;
 
   input.addEventListener('input', () => {
+    btnLimpiar.style.display =
+    input.value.length ? 'block' : 'none';
     clearTimeout(debounceTimer);
+    
     const q = input.value.trim();
     if (q.length < 2) {
       sugerenciasBox.style.display = 'none';
@@ -186,13 +226,7 @@
         <div onclick="elegirSugerencia('${p.nombre.replace(/'/g, "\\'")}')">
           <b>${p.nombre}</b><br>
           <small style="color:#6b7280;">
-            <div style="margin-top:10px;">
-
-    ${p.droga ? `<span class="chip">${p.droga}</span>` : ''}
-
-    ${p.laboratorio ? `<span class="chip">${p.laboratorio}</span>` : ''}
-
-</div>
+            ${p.droga || ''}${p.laboratorio ? ' - ' + p.laboratorio : ''}
           </small>
         </div>
       `)

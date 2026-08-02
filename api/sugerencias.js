@@ -18,7 +18,15 @@ export default function handler(req, res) {
       score: puntaje(p, query)
     }))
     .filter(p => p.score > 0)
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => {
+  if (b.score !== a.score) {
+    return b.score - a.score;
+  }
+
+  return a.nombre.localeCompare(b.nombre, 'es', {
+    sensitivity: 'base'
+  });
+});
 
   const resultados = encontrados
     .slice(0, 8)
