@@ -202,7 +202,7 @@
     btnLimpiar.style.display =
     input.value.length ? 'block' : 'none';
     clearTimeout(debounceTimer);
-    
+
     const q = input.value.trim();
     if (q.length < 2) {
       sugerenciasBox.style.display = 'none';
@@ -414,6 +414,21 @@ sugerenciasBox.innerHTML = html;
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') buscar();
   });
+
+  btnLimpiar.addEventListener('click', () => {
+
+    input.value='';
+
+    resultado.innerHTML='';
+
+    sugerenciasBox.style.display='none';
+
+    btnLimpiar.style.display='none';
+
+    input.focus();
+
+});
+
 </script>
 
 </body>
