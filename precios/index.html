@@ -199,6 +199,8 @@
   let ultimoListado = [];
   let ultimaBusqueda = "";
   let debounceTimer;
+  let ultimoTotal = 0;
+  let viendoDetalle = false;
 
   input.addEventListener('input', () => {
     btnLimpiar.style.display =
@@ -310,6 +312,21 @@ sugerenciasBox.innerHTML = html;
       `).join('');
 
       resultado.innerHTML = `
+      ${viendoDetalle ? `
+        <button 
+        onclick="volverAlListado()"
+        style="
+        background:none;
+        border:none;
+        color:#0071e3;
+        font-size:15px;
+        font-weight:600;
+        cursor:pointer;
+        margin-bottom:15px;
+        ">
+        ← Volver al listado
+        </button>
+        ` : ''}
         <div class="producto">
           <h2>${data.nombre}</h2>
           ${data.laboratorio ? `<p style="font-size:13px; color:#6b7280; margin:0 0 8px;">${data.laboratorio}</p>` : ''}
@@ -345,6 +362,8 @@ sugerenciasBox.innerHTML = html;
 
         ultimoListado = data.resultados;
         ultimaBusqueda = q;
+        ultimoTotal = data.total;
+        viendoDetalle = false;
 
 
         if (!data.resultados || data.resultados.length === 0) {
@@ -439,13 +458,32 @@ function mostrarListado(productos, q, total) {
 }
 
   function buscarProducto(nombre){
-      input.value = nombre;
-      buscar();
-  }
+
+    viendoDetalle = true;
+
+    input.value = nombre;
+
+    buscar();
+
+}
 
   function copiarPrecio(precio) {
     navigator.clipboard.writeText(precio);
   }
+
+  function volverAlListado(){
+
+    viendoDetalle = false;
+
+    input.value = ultimaBusqueda;
+
+    mostrarListado(
+        ultimoListado,
+        ultimaBusqueda,
+        ultimoTotal
+    );
+
+}
 
   btn.addEventListener('click', buscar);
   input.addEventListener('keydown', (e) => {
