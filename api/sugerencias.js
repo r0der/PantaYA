@@ -29,7 +29,7 @@ export default function handler(req, res) {
 });
 
   const resultados = encontrados
-    .slice(0, 8)
+    .slice(0, 10)
     .map(p => ({
       nombre: p.nombre,
       droga: p.droga,

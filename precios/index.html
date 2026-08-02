@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Glosario Medicinal</title>
+<title>Vademecum Digital</title>
 <style>
   * { box-sizing: border-box; }
   body {
@@ -150,6 +150,12 @@
       user-select:none;
   }
 
+  #q::placeholder {
+    font-size: 13px;
+    color: #6b7280;
+    opacity: 1;
+}
+
   #btnLimpiar:hover{
       color:#333;
   }
@@ -160,7 +166,7 @@
 
 <div class="card">
   <h1 style="font-size:22px; font-weight:700; letter-spacing:-0.02em; margin:0 0 2px; color:#1d1d1f;">
-  Glosario<span style="color:#0071e3;">Medicinal</span>
+  Vademecum<span style="color:#0071e3;"> Digital</span>
 </h1>
 <p class="subtitle" style="margin:0 0 22px;">Precios y datos de medicamentos, al instante</p>
 
@@ -171,7 +177,7 @@
         <input
             type="text"
             id="q"
-            placeholder="Ej: Acemuk"
+            placeholder="Ej: isis / drospirenona / Siegfried"
             autocomplete="off">
 
         <span id="btnLimpiar">✕</span>
@@ -201,6 +207,7 @@
   let debounceTimer;
   let ultimoTotal = 0;
   let viendoDetalle = false;
+  let scrollListado = 0;
 
   input.addEventListener('input', () => {
     btnLimpiar.style.display =
@@ -221,7 +228,11 @@
       const data = await res.json();
 
       if (!data.resultados || data.resultados.length === 0) {
+
+        sugerenciasBox.innerHTML = '';
+        sugerenciasBox.scrollTop = 0;
         sugerenciasBox.style.display = 'none';
+
         return;
       }
 
@@ -253,8 +264,13 @@
       `;
     }
 
-sugerenciasBox.innerHTML = html;
-      sugerenciasBox.style.display = 'block';
+    sugerenciasBox.innerHTML = html;
+
+    // volver siempre al inicio del scroll
+    sugerenciasBox.scrollTop = 0;
+
+    sugerenciasBox.style.display = 'block';
+
     } catch (err) {
       sugerenciasBox.style.display = 'none';
     }
@@ -459,6 +475,9 @@ function mostrarListado(productos, q, total) {
 
   function buscarProducto(nombre){
 
+    // Guardamos la posición actual del listado
+    scrollListado = window.scrollY;
+
     viendoDetalle = true;
 
     input.value = nombre;
@@ -483,7 +502,17 @@ function mostrarListado(productos, q, total) {
         ultimoTotal
     );
 
-}
+
+    setTimeout(() => {
+
+        window.scrollTo({
+            top: scrollListado,
+            behavior: "instant"
+        });
+
+    }, 50);
+
+  }
 
   btn.addEventListener('click', buscar);
   input.addEventListener('keydown', (e) => {
