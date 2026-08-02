@@ -196,7 +196,8 @@
   const sugerenciasBox = document.getElementById('sugerencias');
   const btnLimpiar = document.getElementById('btnLimpiar');
 
-  let ultimoListado = null;
+  let ultimoListado = [];
+  let ultimaBusqueda = "";
   let debounceTimer;
 
   input.addEventListener('input', () => {
@@ -327,87 +328,108 @@ sugerenciasBox.innerHTML = html;
   }
   
     async function buscarTodos() {
+
     const q = input.value.trim();
     if (!q) return;
 
     resultado.innerHTML = '<p class="loading">Buscando medicamentos...</p>';
 
-  try {
-    const res = await fetch(API_BASE + '/api/buscar-productos?q=' + encodeURIComponent(q));
-    const data = await res.json();
-
-    // Guardamos el listado para poder volver luego
-    ultimoListado = data;
-
     try {
-      const res = await fetch(API_BASE + '/api/buscar-productos?q=' + encodeURIComponent(q));
-      const data = await res.json();
 
-      if (!data.resultados || data.resultados.length === 0) {
-        resultado.innerHTML = '<p class="error">No se encontraron medicamentos.</p>';
-        return;
-      }
+        const res = await fetch(
+            API_BASE + '/api/buscar-productos?q=' + encodeURIComponent(q)
+        );
 
-      resultado.innerHTML = `
-      <div style="margin-bottom:20px;">
-          <div style="font-size:28px;font-weight:700;color:#1d1d1f;">
-              ${data.total}
-          </div>
+        const data = await res.json();
 
-          <div style="color:#6b7280;font-size:14px;">
-              medicamentos encontrados
-          </div>
 
-          <div style="margin-top:8px;font-size:14px;color:#374151;">
-              Resultados para:
-              <b>${q}</b>
-          </div>
-      </div>
+        ultimoListado = data.resultados;
+        ultimaBusqueda = q;
 
-        ` + data.resultados.map(p => `
-      <div
+
+        if (!data.resultados || data.resultados.length === 0) {
+
+            resultado.innerHTML =
+                '<p class="error">No se encontraron medicamentos.</p>';
+
+            return;
+        }
+
+
+        mostrarListado(data.resultados, q, data.total);
+
+
+    } catch (err) {
+
+        console.error(err);
+
+        resultado.innerHTML =
+            '<p class="error">Error al buscar medicamentos.</p>';
+
+    }
+
+}
+
+function mostrarListado(productos, q, total) {
+
+    resultado.innerHTML = `
+
+    <div style="margin-bottom:20px;">
+        <div style="font-size:28px;font-weight:700;color:#1d1d1f;">
+            ${total}
+        </div>
+
+        <div style="color:#6b7280;font-size:14px;">
+            medicamentos encontrados
+        </div>
+
+        <div style="margin-top:8px;font-size:14px;color:#374151;">
+            Resultados para:
+            <b>${q}</b>
+        </div>
+    </div>
+
+    ` + productos.map(p => `
+
+    <div
         onclick="buscarProducto('${p.nombre.replace(/'/g, "\\'")}')"
         style="
-          background:#fff;
-          border:1px solid #e5e5e7;
-          border-radius:16px;
-          padding:16px;
-          margin-bottom:12px;
-          cursor:pointer;
-          transition:.15s;
+            background:#fff;
+            border:1px solid #e5e5e7;
+            border-radius:16px;
+            padding:16px;
+            margin-bottom:12px;
+            cursor:pointer;
+            transition:.15s;
         "
-        onmouseover="this.style.boxShadow='0 4px 14px rgba(0,0,0,.08)'"
-        onmouseout="this.style.boxShadow='none'"
-      >
+    >
 
         <div style="font-size:18px;font-weight:700;color:#1d1d1f;">
-          ${p.nombre}
+            ${p.nombre}
         </div>
 
         <div style="margin-top:8px;font-size:14px;color:#4b5563;">
-          ${p.droga || '-'}
+            ${p.droga || '-'}
         </div>
 
         <div style="margin-top:4px;font-size:14px;color:#6b7280;">
-          ${p.laboratorio || '-'}
+            ${p.laboratorio || '-'}
         </div>
 
         <div style="
-          margin-top:12px;
-          color:#0071e3;
-          font-weight:600;
-          font-size:14px;
+            margin-top:12px;
+            color:#0071e3;
+            font-weight:600;
+            font-size:14px;
         ">
-          Ver precios →
+            Ver precios →
         </div>
 
-      </div>
+    </div>
+
     `).join('');
 
-    } catch (err) {
-      resultado.innerHTML = '<p class="error">Error al buscar medicamentos.</p>';
-    }
-  }
+}
 
   function volverAlListado() {
 
