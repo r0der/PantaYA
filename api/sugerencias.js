@@ -16,7 +16,7 @@ export default function handler(req, res) {
     .filter(p => {
       return (
         normalizar(p.nombre || '').includes(query) ||
-        normalizar(p.monodroga || '').includes(query) ||
+        normalizar(p.droga || '').includes(query) ||
         normalizar(p.laboratorio || '').includes(query)
       );
     })
@@ -25,7 +25,6 @@ export default function handler(req, res) {
 
   return res.status(200).json({ resultados });
 }
-
 
 function normalizar(texto) {
   return texto
