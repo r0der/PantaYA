@@ -12,15 +12,16 @@ export default function handler(req, res) {
 
   const query = normalizar(q);
 
-  const resultados = productos
-    .filter(p => {
-      return (
-        normalizar(p.nombre || '').includes(query) ||
-        normalizar(p.droga || '').includes(query) ||
-        normalizar(p.laboratorio || '').includes(query)
-      );
-    })
-    .slice(0, 20)
+  const encontrados = productos
+    .map(p => ({
+      ...p,
+      score: puntaje(p, query)
+    }))
+    .filter(p => p.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  const resultados = encontrados
+    .slice(0, 8)
     .map(p => ({
       nombre: p.nombre,
       droga: p.droga,
@@ -28,9 +29,11 @@ export default function handler(req, res) {
       slug: p.slug
     }));
 
-  return res.status(200).json({ resultados });
+  return res.status(200).json({
+    resultados,
+    total: encontrados.length
+  });
 }
-
 
 function normalizar(texto) {
   return texto
@@ -39,4 +42,29 @@ function normalizar(texto) {
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .trim();
+}
+
+function empiezaPor(texto, query) {
+  const palabras = normalizar(texto).split(/\s+/);
+  return palabras.some(palabra => palabra.startsWith(query));
+}
+
+function puntaje(p, query) {
+  const nombre = normalizar(p.nombre || '');
+  const droga = normalizar(p.droga || '');
+  const laboratorio = normalizar(p.laboratorio || '');
+  const accion = normalizar(p.accion || '');
+
+  // Coincidencias exactas
+  if (nombre === query) return 100;
+  if (droga === query) return 95;
+  if (laboratorio === query) return 90;
+
+  // Coincidencias por comienzo de palabra
+  if (empiezaPor(nombre, query)) return 80;
+  if (empiezaPor(droga, query)) return 75;
+  if (empiezaPor(laboratorio, query)) return 70;
+  if (empiezaPor(accion, query)) return 60;
+
+  return 0;
 }
