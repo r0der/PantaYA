@@ -196,6 +196,7 @@
   const sugerenciasBox = document.getElementById('sugerencias');
   const btnLimpiar = document.getElementById('btnLimpiar');
 
+  let ultimoListado = null;
   let debounceTimer;
 
   input.addEventListener('input', () => {
@@ -331,6 +332,13 @@ sugerenciasBox.innerHTML = html;
 
     resultado.innerHTML = '<p class="loading">Buscando medicamentos...</p>';
 
+  try {
+    const res = await fetch(API_BASE + '/api/buscar-productos?q=' + encodeURIComponent(q));
+    const data = await res.json();
+
+    // Guardamos el listado para poder volver luego
+    ultimoListado = data;
+
     try {
       const res = await fetch(API_BASE + '/api/buscar-productos?q=' + encodeURIComponent(q));
       const data = await res.json();
@@ -400,6 +408,13 @@ sugerenciasBox.innerHTML = html;
       resultado.innerHTML = '<p class="error">Error al buscar medicamentos.</p>';
     }
   }
+
+  function volverAlListado() {
+
+    if (!ultimoListado) return;
+
+    // vuelve a pintar exactamente las cards
+}
 
   function buscarProducto(nombre){
       input.value = nombre;
