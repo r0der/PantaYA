@@ -28,7 +28,10 @@ export default function handler(req, res) {
       slug: p.slug
     }));
 
-  return res.status(200).json({ resultados });
+  return res.status(200).json({
+  total: resultados.length,
+  resultados
+});
 }
 
 
