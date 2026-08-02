@@ -264,9 +264,10 @@
       `;
     }
 
+    sugerenciasBox.style.display = 'none';
+
     sugerenciasBox.innerHTML = html;
 
-    // volver siempre al inicio del scroll
     sugerenciasBox.scrollTop = 0;
 
     sugerenciasBox.style.display = 'block';
@@ -514,8 +515,9 @@ function mostrarListado(productos, q, total) {
 
   }
 
-  btn.addEventListener('click', buscar);
+  btn.addEventListener('click', buscarTodos);
   input.addEventListener('keydown', (e) => {
+    sugerenciasBox.scrollTop = 0;
     if (e.key === 'Enter') buscar();
   });
 
