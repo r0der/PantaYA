@@ -20,11 +20,17 @@ export default function handler(req, res) {
         normalizar(p.laboratorio || '').includes(query)
       );
     })
-    .slice(0, 8)
-    .map(p => p.nombre);
+    .slice(0, 20)
+    .map(p => ({
+      nombre: p.nombre,
+      droga: p.droga,
+      laboratorio: p.laboratorio,
+      slug: p.slug
+    }));
 
   return res.status(200).json({ resultados });
 }
+
 
 function normalizar(texto) {
   return texto

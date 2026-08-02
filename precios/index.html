@@ -169,8 +169,15 @@
       }
 
       sugerenciasBox.innerHTML = data.resultados
-        .map(nombre => `<div onclick="elegirSugerencia('${nombre.replace(/'/g, "\\'")}')">${nombre}</div>`)
-        .join('');
+      .map(p => `
+        <div onclick="elegirSugerencia('${p.nombre.replace(/'/g, "\\'")}')">
+          <b>${p.nombre}</b><br>
+          <small style="color:#6b7280;">
+            ${p.droga || ''} ${p.laboratorio ? ' - ' + p.laboratorio : ''}
+          </small>
+        </div>
+      `)
+      .join('');
       sugerenciasBox.style.display = 'block';
     } catch (err) {
       sugerenciasBox.style.display = 'none';
