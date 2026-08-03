@@ -375,6 +375,8 @@
     const q = input.value.trim();
     if (!q) return;
 
+    laboratorioSeleccionado = '';
+
     sugerenciasBox.style.display = 'none';
     btn.disabled = true;
     resultado.innerHTML = '<p class="loading">Buscando...</p>';
@@ -526,6 +528,9 @@
     const q = input.value.trim();
     if (!q) return;
 
+    // Reiniciar filtro de laboratorio
+    laboratorioSeleccionado = '';
+
     resultado.innerHTML = '<p class="loading">Buscando medicamentos...</p>';
 
     try {
@@ -545,11 +550,11 @@
 
         if (!data.resultados || data.resultados.length === 0) {
 
-            resultado.innerHTML =
-                '<p class="error">No se encontraron medicamentos.</p>';
+        // Intentar abrir la ficha directamente en Alfabeta
+        await buscar();
 
-            return;
-        }
+        return;
+}
 
 
         mostrarListado(data.resultados, q, data.total);
