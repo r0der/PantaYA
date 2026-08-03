@@ -47,11 +47,11 @@ export default async function handler(req, res) {
 
     const prompt = `
 
-Actuá como asistente farmacológico profesional.
+Actuá como asistente farmacológico profesional especializado en información para visitadores médicos y profesionales de la salud.
 
-Generá una descripción breve y clara para un vademécum digital orientado a profesionales de la salud. Teniendo en cuenta el sistema D.A.V.I.D. muy famoso en el área de medicina para estudiar una molécula.
+Generá una ficha técnica clara, estructurada y profesional sobre el medicamento indicado.
 
-Medicamento:
+Producto:
 ${nombre}
 
 Principio activo:
@@ -64,20 +64,54 @@ Acción terapéutica:
 ${accion || "No informado"}
 
 
-Responder con:
+Organizá la información utilizando la técnica D.A.V.I.D.:
 
-• Qué es el medicamento.
-• Grupo farmacológico.
-• Cómo actúa (resumen).
-• Usos habituales.
-• Información relevante para profesionales.
+D - DESCRIPCIÓN
+Explicá qué es el medicamento.
+Incluir:
+- Nombre comercial.
+- Principio activo.
+- Concentración (si está disponible).
+- Forma farmacéutica (si está disponible).
+- Grupo terapéutico.
+
+A - ACCIÓN
+Describí:
+- Mecanismo de acción.
+- Cómo actúa el principio activo.
+- Efecto terapéutico principal.
+
+V - VENTAJAS
+Destacá:
+- Beneficios diferenciales del producto.
+- Características que pueden representar ventajas frente a alternativas terapéuticas.
+- Aspectos relevantes para una presentación médica.
+
+(No inventar ventajas comerciales no comprobadas. Basarse únicamente en características farmacológicas conocidas).
+
+I - INDICACIONES
+Describí:
+- Principales indicaciones terapéuticas.
+- Patologías o cuadros clínicos donde se utiliza.
+- Perfil general de pacientes en los que puede indicarse.
+
+D - DOSIFICACIÓN
+Informá:
+- Pautas habituales de administración.
+- Frecuencia de uso.
+- Duración aproximada cuando corresponda.
+
+Si no existe información suficiente o puede variar según paciente, aclararlo.
+No indicar una pauta personalizada ni realizar recomendaciones médicas individuales.
 
 
-No indicar dosis.
-No realizar recomendaciones individuales.
-No reemplazar información oficial del prospecto.
-
-Usar lenguaje profesional pero fácil de leer.
+IMPORTANTE:
+- Usar lenguaje profesional orientado a visitadores médicos.
+- Ser claro y conciso.
+- No reemplazar el prospecto oficial.
+- No inventar datos que no estén disponibles.
+- No realizar diagnósticos ni recomendaciones personales.
+- Separar la información en títulos y viñetas para facilitar la lectura.
 
 `;
 
