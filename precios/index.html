@@ -618,36 +618,6 @@ function mostrarListado(productos, q, total) {
 
 }
 
-  async function mostrarInfoIA(nombre,droga,laboratorio,accion){
-
-    abrirModal();
-
-    modalContenido.innerHTML = `
-        <p class="loading">
-        Generando información...
-        </p>
-    `;
-
-
-    const res = await fetch(
-      API_BASE +
-      `/api/info-ia?nombre=${encodeURIComponent(nombre)}
-      &droga=${encodeURIComponent(droga)}
-      &laboratorio=${encodeURIComponent(laboratorio)}
-      &accion=${encodeURIComponent(accion)}`
-    );
-
-
-    const data = await res.json();
-
-
-    modalContenido.innerHTML = `
-       <h3>${nombre}</h3>
-       <p>${data.texto.replace(/\n/g,"<br>")}</p>
-    `;
-
-}
-
   function volverAlListado(){
 
     viendoDetalle = false;
@@ -731,20 +701,23 @@ async function mostrarInfoIA(nombre, droga, laboratorio, accion) {
 
         const data = await res.json();
 
+        if (!res.ok || !data.texto) {
+            throw new Error(data.error || "Respuesta inválida de IA");
+        }
 
-        texto.innerHTML =
-            data.texto
-            .replace(/\n/g,'<br>');
+        texto.innerHTML = data.texto.replace(/\n/g,'<br>');
 
 
     } catch(error) {
 
+    console.error(error);
 
-        texto.innerHTML =
-        "No se pudo generar la información.";
+    texto.innerHTML =
+    "No se pudo generar la información.<br><small>" +
+    error.message +
+    "</small>";
 
-
-    }
+}
 
 }
 
