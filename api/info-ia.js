@@ -121,6 +121,28 @@ FORMATO DE RESPUESTA:
 - Separar cada sección con saltos de línea.
 - La respuesta debe estar lista para mostrarse directamente dentro de una interfaz web.
 
+FORMATO DE SALIDA OBLIGATORIO:
+Separar cada sección D.A.V.I.D. con dos saltos de línea.
+
+Ejemplo:
+
+D - DESCRIPCIÓN
+Contenido de la descripción.
+
+A - ACCIÓN
+Contenido de la acción.
+
+V - VENTAJAS
+Contenido de las ventajas.
+
+I - INDICACIONES
+Contenido de las indicaciones.
+
+D - DOSIFICACIÓN
+Contenido de la dosificación.
+
+No escribir todas las secciones juntas en un mismo bloque de texto.
+
 `;
 
 

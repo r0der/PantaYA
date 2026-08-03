@@ -190,24 +190,31 @@
 
 
   .cerrar-modal {
-
     position:absolute;
-    right:15px;
-    top:15px;
-
-    border:none;
-    background:#f3f4f6;
+    top:12px;
+    right:12px;
 
     width:32px;
     height:32px;
 
     border-radius:50%;
+    border:none;
+
+    background:#f3f4f6;
+    color:#374151;
+
+    font-size:18px;
+    font-weight:600;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
     cursor:pointer;
 
-    font-size:16px;
-
-  }
+    padding:0;
+    line-height:1;
+}
 
 
   #modalTexto {
@@ -433,17 +440,7 @@
         ${data.nombre}
       </h2>
 
-      <div class="producto">
-
-    <h2 style="
-      margin:0 0 10px;
-      font-size:22px;
-    ">
-      ${data.nombre}
-    </h2>
-
-
-    ${data.laboratorio ? `
+      ${data.laboratorio ? `
       <p style="font-size:13px; color:#6b7280; margin:0 0 8px;">
         ${data.laboratorio}
       </p>
@@ -754,6 +751,17 @@ function cerrarModalIA(){
     document.getElementById('modalIA').style.display='none';
 
 }
+
+const modalIA = document.getElementById('modalIA');
+
+modalIA.addEventListener('click', function(e) {
+
+  // Si el click fue directamente sobre el fondo del modal
+  if (e.target === modalIA) {
+    cerrarModalIA();
+  }
+
+});
 
 </script>
 
