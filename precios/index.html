@@ -286,7 +286,7 @@
       sugerenciasBox.style.display = 'none';
       return;
     }
-    debounceTimer = setTimeout(() => cargarSugerencias(q), 250);
+    // debounceTimer = setTimeout(() => cargarSugerencias(q), 250);
   });
 
   /* async function cargarSugerencias(q) {
@@ -439,6 +439,8 @@
       ">
         ${data.nombre}
       </h2>
+
+      </div>
 
       ${data.laboratorio ? `
       <p style="font-size:13px; color:#6b7280; margin:0 0 8px;">
