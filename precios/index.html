@@ -276,6 +276,7 @@
   let viendoDetalle = false;
   let scrollListado = 0;
   let vistaActual = 'inicio';
+  let laboratorioSeleccionado = '';
 
   input.addEventListener('input', () => {
     btnLimpiar.style.display =
@@ -566,11 +567,25 @@
 
 function mostrarListado(productos, q, total) {
 
+  const laboratorios = [...new Set(
+    productos.map(p => p.laboratorio).filter(Boolean)
+  )].sort();
+
+  let productosFiltrados = productos;
+
+  if (laboratorioSeleccionado) {
+
+      productosFiltrados = productos.filter(
+          p => p.laboratorio === laboratorioSeleccionado
+      );
+
+  }
+
     resultado.innerHTML = `
 
     <div style="margin-bottom:20px;">
         <div style="font-size:28px;font-weight:700;color:#1d1d1f;">
-            ${total}
+            ${productosFiltrados.length}
         </div>
 
         <div style="color:#6b7280;font-size:14px;">
@@ -581,9 +596,38 @@ function mostrarListado(productos, q, total) {
             Resultados para:
             <b>${q}</b>
         </div>
+
+        <div style="margin-top:18px;">
+
+    <select
+        id="filtroLaboratorio"
+        onchange="filtrarLaboratorio()"
+        style="
+            width:100%;
+            padding:12px;
+            border:1px solid #d1d5db;
+            border-radius:12px;
+            font-size:15px;
+            background:white;
+        ">
+
+        <option value=""
+          ${laboratorioSeleccionado === '' ? 'selected' : ''}>
+          Todos los laboratorios
+      </option>
+
+        ${laboratorios.map(l => `
+            <option value="${l}">
+                ${l}
+            </option>
+        `).join('')}
+
+    </select>
+
+</div>
     </div>
 
-    ` + productos.map(p => `
+    ` + productosFiltrados.map(p => `
 
     <div
         onclick="buscarProducto('${p.nombre.replace(/'/g, "\\'")}')"
@@ -624,6 +668,19 @@ function mostrarListado(productos, q, total) {
     `).join('');
 
 }
+
+  function filtrarLaboratorio() {
+
+      laboratorioSeleccionado =
+          document.getElementById('filtroLaboratorio').value;
+
+      mostrarListado(
+          ultimoListado,
+          ultimaBusqueda,
+          ultimoTotal
+      );
+
+  }
 
   function volverAlListado() {
 
