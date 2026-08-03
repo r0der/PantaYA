@@ -617,10 +617,12 @@ function mostrarListado(productos, q, total) {
       </option>
 
         ${laboratorios.map(l => `
-            <option value="${l}">
-                ${l}
-            </option>
-        `).join('')}
+          <option
+              value="${l}"
+              ${laboratorioSeleccionado === l ? 'selected' : ''}>
+              ${l}
+          </option>
+      `).join('')}
 
     </select>
 
@@ -671,16 +673,16 @@ function mostrarListado(productos, q, total) {
 
   function filtrarLaboratorio() {
 
-      laboratorioSeleccionado =
-          document.getElementById('filtroLaboratorio').value;
+    laboratorioSeleccionado =
+        document.getElementById('filtroLaboratorio').value;
 
-      mostrarListado(
-          ultimoListado,
-          ultimaBusqueda,
-          ultimoTotal
-      );
+    mostrarListado(
+        ultimoListado,
+        ultimaBusqueda,
+        ultimoTotal
+    );
 
-  }
+}
 
   function volverAlListado() {
 
