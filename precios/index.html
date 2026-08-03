@@ -763,14 +763,17 @@ function cerrarModalIA(){
 
 }
 
-const modalIA = document.getElementById('modalIA');
+window.addEventListener('load', () => {
 
-modalIA.addEventListener('click', function(e) {
+    const modalIA = document.getElementById('modalIA');
 
-  // Si el click fue directamente sobre el fondo del modal
-  if (e.target === modalIA) {
-    cerrarModalIA();
-  }
+    modalIA.addEventListener('click', function(e) {
+
+        if (e.target === modalIA) {
+            cerrarModalIA();
+        }
+
+    });
 
 });
 
