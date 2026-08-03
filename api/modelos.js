@@ -1,16 +1,18 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
 export default async function handler(req, res) {
 
   try {
 
-    const genAI = new GoogleGenerativeAI(
+    const response = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models?key=" +
       process.env.GEMINI_API_KEY
     );
 
-    const modelos = await genAI.listModels();
 
-    return res.status(200).json(modelos);
+    const data = await response.json();
+
+
+    return res.status(200).json(data);
+
 
   } catch(error) {
 
