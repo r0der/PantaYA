@@ -475,15 +475,11 @@
 
 
     <div style="
-      margin-top:18px;
-      padding-top:14px;
-      border-top:1px solid #f0f0f0;
-      display:flex;
-      align-items:center;
-      gap:12px;
-    ">
+  margin-top:18px;
+  text-align:center;
+">
 
-      <button
+  <button
     onclick="mostrarInfoIA(
       '${data.nombre.replace(/'/g, "\\'")}',
       '${(data.droga || '').replace(/'/g, "\\'")}',
@@ -494,23 +490,22 @@
       background:#eef4ff;
       border:1px solid #dbe7ff;
       border-radius:10px;
-      padding:8px 14px;
+      padding:9px 18px;
       font-size:13px;
       font-weight:600;
       color:#2563eb;
       cursor:pointer;
-      white-space:nowrap;
     ">
     ✨ Generar información detallada
   </button>
 
-
-  <span style="
-    font-size:12px;
+  <div style="
+    margin-top:8px;
+    font-size:11px;
     color:#9ca3af;
   ">
     Puede contener técnica D.A.V.I.D.
-  </span>
+  </div>
 
 </div>
 
@@ -738,7 +733,7 @@ async function mostrarInfoIA(nombre, droga, laboratorio, accion) {
             throw new Error(data.error || "Respuesta inválida de IA");
         }
 
-        texto.innerHTML = data.texto.replace(/\n/g,'<br>');
+        texto.innerHTML = data.texto;
 
 
     } catch(error) {

@@ -113,6 +113,14 @@ IMPORTANTE:
 - No realizar diagnósticos ni recomendaciones personales.
 - Separar la información en títulos y viñetas para facilitar la lectura.
 
+FORMATO DE RESPUESTA:
+- No utilizar Markdown.
+- No usar símbolos como #, *, -, ni numerales.
+- Utilizar títulos simples en mayúscula.
+- Resaltar los títulos con negrita usando formato HTML.
+- Separar cada sección con saltos de línea.
+- La respuesta debe estar lista para mostrarse directamente dentro de una interfaz web.
+
 `;
 
 
