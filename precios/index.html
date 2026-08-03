@@ -222,7 +222,7 @@
     debounceTimer = setTimeout(() => cargarSugerencias(q), 250);
   });
 
-  async function cargarSugerencias(q) {
+  /* async function cargarSugerencias(q) {
     try {
       const res = await fetch(API_BASE + '/api/sugerencias?q=' + encodeURIComponent(q));
       const data = await res.json();
@@ -294,6 +294,14 @@
     }
   });
 
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+        buscarTodos();
+    }
+
+}); */
+
   async function buscar() {
     const q = input.value.trim();
     if (!q) return;
@@ -329,30 +337,93 @@
       `).join('');
 
       resultado.innerHTML = `
-      ${viendoDetalle ? `
-        <button 
-        onclick="volverAlListado()"
+  ${viendoDetalle ? `
+    <button 
+      onclick="volverAlListado()"
+      style="
+      background:none;
+      border:none;
+      color:#0071e3;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;
+      margin-bottom:15px;
+      ">
+      ← Volver al listado
+    </button>
+  ` : ''}
+
+  <div class="producto">
+
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    ">
+
+      <h2 style="
+        margin:0;
+        font-size:22px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+      ">
+        ${data.nombre}
+      </h2>
+
+      <button
+        onclick="mostrarInfoIA(
+          '${data.nombre.replace(/'/g, "\\'")}',
+          '${(data.droga || '').replace(/'/g, "\\'")}',
+          '${(data.laboratorio || '').replace(/'/g, "\\'")}',
+          '${(data.accion || '').replace(/'/g, "\\'")}'
+        )"
         style="
-        background:none;
-        border:none;
-        color:#0071e3;
-        font-size:15px;
-        font-weight:600;
-        cursor:pointer;
-        margin-bottom:15px;
+          background:#f3f4f6;
+          border:none;
+          border-radius:10px;
+          padding:8px 12px;
+          font-size:13px;
+          font-weight:600;
+          color:#374151;
+          cursor:pointer;
+          white-space:nowrap;
         ">
-        ← Volver al listado
-        </button>
-        ` : ''}
-        <div class="producto">
-          <h2>${data.nombre}</h2>
-          ${data.laboratorio ? `<p style="font-size:13px; color:#6b7280; margin:0 0 8px;">${data.laboratorio}</p>` : ''}
-          ${data.droga ? `<p style="font-size:13px; color:#374151; margin:0 0 4px;"><b>Droga:</b> ${data.droga}</p>` : ''}
-          ${data.accion ? `<p style="font-size:13px; color:#374151; margin:0 0 10px;"><b>Acción:</b> ${data.accion}</p>` : ''}
-          ${listaPresentaciones}
-          ${data.descripcion ? `<p style="font-size:12px; color:#9ca3af; margin-top:12px; line-height:1.4;">${data.descripcion}</p>` : ''}
-        </div>
-      `;
+        ✨ Más info
+      </button>
+
+    </div>
+
+    ${data.laboratorio ? `
+      <p style="font-size:13px; color:#6b7280; margin:0 0 8px;">
+        ${data.laboratorio}
+      </p>
+    ` : ''}
+
+    ${data.droga ? `
+      <p style="font-size:13px; color:#374151; margin:0 0 4px;">
+        <b>Droga:</b> ${data.droga}
+      </p>
+    ` : ''}
+
+    ${data.accion ? `
+      <p style="font-size:13px; color:#374151; margin:0 0 10px;">
+        <b>Acción:</b> ${data.accion}
+      </p>
+    ` : ''}
+
+    ${listaPresentaciones}
+
+    ${data.descripcion ? `
+      <p style="font-size:12px; color:#9ca3af; margin-top:12px; line-height:1.4;">
+        ${data.descripcion}
+      </p>
+    ` : ''}
+
+  </div>
+`;
      
     } catch (err) {
       resultado.innerHTML = '<p class="error">Error de conexión. Probá de nuevo.</p>';
@@ -458,7 +529,7 @@ function mostrarListado(productos, q, total) {
             font-weight:600;
             font-size:14px;
         ">
-            Ver precios →
+            Ver información →
         </div>
 
     </div>
@@ -487,9 +558,35 @@ function mostrarListado(productos, q, total) {
 
 }
 
-  function copiarPrecio(precio) {
-    navigator.clipboard.writeText(precio);
-  }
+  async function mostrarInfoIA(nombre,droga,laboratorio,accion){
+
+    abrirModal();
+
+    modalContenido.innerHTML = `
+        <p class="loading">
+        Generando información...
+        </p>
+    `;
+
+
+    const res = await fetch(
+      API_BASE +
+      `/api/info-ia?nombre=${encodeURIComponent(nombre)}
+      &droga=${encodeURIComponent(droga)}
+      &laboratorio=${encodeURIComponent(laboratorio)}
+      &accion=${encodeURIComponent(accion)}`
+    );
+
+
+    const data = await res.json();
+
+
+    modalContenido.innerHTML = `
+       <h3>${nombre}</h3>
+       <p>${data.texto.replace(/\n/g,"<br>")}</p>
+    `;
+
+}
 
   function volverAlListado(){
 
