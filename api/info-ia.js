@@ -99,15 +99,12 @@ Usar lenguaje profesional pero fácil de leer.
 
   } catch(error) {
 
+  console.error("ERROR GEMINI:", error);
 
-    console.error(error);
+  return res.status(500).json({
+    error: error.message
+  });
 
-
-    return res.status(500).json({
-      error:"Error generando información con IA"
-    });
-
-
-  }
+}
 
 }
