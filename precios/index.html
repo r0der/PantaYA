@@ -529,7 +529,7 @@ function mostrarListado(productos, q, total) {
             font-weight:600;
             font-size:14px;
         ">
-            Ver información →
+            Ver ficha →
         </div>
 
     </div>
@@ -631,6 +631,17 @@ function mostrarListado(productos, q, total) {
     input.focus();
 
 });
+
+function mostrarInfoIA(nombre, droga, laboratorio, accion) {
+
+    alert(
+      "Producto: " + nombre + "\n" +
+      "Droga: " + droga + "\n" +
+      "Laboratorio: " + laboratorio + "\n" +
+      "Acción: " + accion
+    );
+
+}
 
 </script>
 
