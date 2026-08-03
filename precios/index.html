@@ -154,10 +154,70 @@
     font-size: 13px;
     color: #6b7280;
     opacity: 1;
-}
+  }
 
   #btnLimpiar:hover{
       color:#333;
+  }
+
+  .modal-ia {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+
+  .modal-contenido {
+
+    background:white;
+    width:100%;
+    max-width:600px;
+    max-height:80vh;
+    overflow:auto;
+
+    border-radius:20px;
+    padding:25px;
+
+    position:relative;
+
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+
+  }
+
+
+  .cerrar-modal {
+
+    position:absolute;
+    right:15px;
+    top:15px;
+
+    border:none;
+    background:#f3f4f6;
+
+    width:32px;
+    height:32px;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+  }
+
+
+  #modalTexto {
+
+    margin-top:20px;
+
+    font-size:15px;
+    line-height:1.6;
+    color:#374151;
+
   }
 
 </style>
@@ -632,18 +692,90 @@ function mostrarListado(productos, q, total) {
 
 });
 
-function mostrarInfoIA(nombre, droga, laboratorio, accion) {
+async function mostrarInfoIA(nombre, droga, laboratorio, accion) {
 
-    alert(
-      "Producto: " + nombre + "\n" +
-      "Droga: " + droga + "\n" +
-      "Laboratorio: " + laboratorio + "\n" +
-      "Acción: " + accion
-    );
+
+    const modal = document.getElementById('modalIA');
+    const titulo = document.getElementById('modalTitulo');
+    const texto = document.getElementById('modalTexto');
+
+
+    titulo.innerHTML = nombre;
+
+    texto.innerHTML = `
+        <div class="loading">
+        ✨ Generando información...
+        </div>
+    `;
+
+
+    modal.style.display = 'flex';
+
+
+    try {
+
+
+        const res = await fetch(
+            API_BASE +
+            '/api/info-ia?' +
+            new URLSearchParams({
+
+                nombre,
+                droga,
+                laboratorio,
+                accion
+
+            })
+        );
+
+
+        const data = await res.json();
+
+
+        texto.innerHTML =
+            data.texto
+            .replace(/\n/g,'<br>');
+
+
+    } catch(error) {
+
+
+        texto.innerHTML =
+        "No se pudo generar la información.";
+
+
+    }
+
+}
+
+function cerrarModalIA(){
+
+    document.getElementById('modalIA').style.display='none';
 
 }
 
 </script>
+
+<div id="modalIA" class="modal-ia">
+
+  <div class="modal-contenido">
+
+    <button class="cerrar-modal" onclick="cerrarModalIA()">
+      ✕
+    </button>
+
+    <h2 id="modalTitulo">
+      Más información
+    </h2>
+
+    <div id="modalTexto">
+      Generando información...
+    </div>
+
+  </div>
+
+</div>
+
 
 </body>
 </html>
