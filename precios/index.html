@@ -275,6 +275,7 @@
   let ultimoTotal = 0;
   let viendoDetalle = false;
   let scrollListado = 0;
+  let vistaActual = 'inicio';
 
   input.addEventListener('input', () => {
     btnLimpiar.style.display =
@@ -406,7 +407,7 @@
       resultado.innerHTML = `
   ${viendoDetalle ? `
     <button 
-      onclick="volverAlListado()"
+      onclick="history.back()"
       style="
       background:none;
       border:none;
@@ -551,8 +552,7 @@
 
 
         mostrarListado(data.resultados, q, data.total);
-
-
+        
     } catch (err) {
 
         console.error(err);
@@ -627,27 +627,10 @@ function mostrarListado(productos, q, total) {
 
   function volverAlListado() {
 
-    if (!ultimoListado) return;
-
-    // vuelve a pintar exactamente las cards
-}
-
-  function buscarProducto(nombre){
-
-    // Guardamos la posición actual del listado
-    scrollListado = window.scrollY;
-
-    viendoDetalle = true;
-
-    input.value = nombre;
-
-    buscar();
-
-}
-
-  function volverAlListado(){
-
+    vistaActual = 'listado';
     viendoDetalle = false;
+
+    if (!ultimoListado) return;
 
     input.value = ultimaBusqueda;
 
@@ -656,7 +639,6 @@ function mostrarListado(productos, q, total) {
         ultimaBusqueda,
         ultimoTotal
     );
-
 
     setTimeout(() => {
 
@@ -667,13 +649,40 @@ function mostrarListado(productos, q, total) {
 
     }, 50);
 
-  }
+}
+
+  function buscarProducto(nombre){
+
+    scrollListado = window.scrollY;
+
+    viendoDetalle = true;
+    vistaActual = 'detalle';
+
+    history.pushState(
+        {
+            vista: 'detalle'
+        },
+        '',
+        '#producto'
+    );
+
+    input.value = nombre;
+
+    buscar();
+
+}
 
   btn.addEventListener('click', buscarTodos);
   input.addEventListener('keydown', (e) => {
-    sugerenciasBox.scrollTop = 0;
-    if (e.key === 'Enter') buscar();
-  });
+
+    if (e.key === 'Enter') {
+
+        e.preventDefault();
+        buscarTodos();
+
+      }
+
+    });
 
   btnLimpiar.addEventListener('click', () => {
 
@@ -762,6 +771,17 @@ modalIA.addEventListener('click', function(e) {
   if (e.target === modalIA) {
     cerrarModalIA();
   }
+
+});
+
+window.addEventListener('popstate', () => {
+
+    if (viendoDetalle) {
+
+        volverAlListado();
+        return;
+
+    }
 
 });
 
