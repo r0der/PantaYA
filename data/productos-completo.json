@@ -52108,6 +52108,41 @@
     "accion": "Antineoplásico"
   },
   {
+    "nombre": "PLATSUL-A",
+    "slug": "platsula",
+    "laboratorio": "Soubeiran Chobet",
+    "droga": "sulfadiazina de plata+asoc.",
+    "accion": "Antibacteriano Cicatrizante"
+  },
+  {
+    "nombre": "PLATSUL-A AEROSOL",
+    "slug": "platsula-aerosol",
+    "laboratorio": "Soubeiran Chobet",
+    "droga": "sulfadiazina de plata+asoc.",
+    "accion": "Antibacteriano Cicatrizante"
+  },
+  {
+    "nombre": "PLATSUL-A GASA EN ROLLO",
+    "slug": "platsula-gasa-en-rollo",
+    "laboratorio": "Soubeiran Chobet",
+    "droga": "sulfadiazina de plata+asoc.",
+    "accion": "Antibacteriano Cicatrizante"
+  },
+  {
+    "nombre": "PLATSUL-A GASAS",
+    "slug": "platsula-gasas",
+    "laboratorio": "Soubeiran Chobet",
+    "droga": "sulfadiazina de plata+asoc.",
+    "accion": "Antibacteriano Cicatrizante"
+  },
+  {
+    "nombre": "PLATSUL-AG",
+    "slug": "platsulag",
+    "laboratorio": "Soubeiran Chobet",
+    "droga": "hilo de plata",
+    "accion": "Antibacteriano Cicatrizante"
+  },
+  {
     "nombre": "PLAYAL 80",
     "slug": "playal-80",
     "laboratorio": "Lesmaher",

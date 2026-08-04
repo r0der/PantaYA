@@ -3,22 +3,35 @@ const fs = require("fs");
 const ARCHIVO_PRODUCTOS = "./data/productos.json";
 const ARCHIVO_COMPLETO = "./data/productos-completo.json";
 
+const puppeteer = require("puppeteer");
+
 async function obtenerProducto(slug) {
 
-    const url = `https://www.alfabeta.net/precio/${slug}.html`;
-
-    const response = await fetch(url, {
-        headers: {
-            "User-Agent": "Mozilla/5.0"
-        }
+    const browser = await puppeteer.launch({
+        headless: false // abrir el navegador para ver qué pasa
     });
 
-    if (!response.ok) return null;
+    const page = await browser.newPage();
 
-    const buffer = await response.arrayBuffer();
+    await page.goto(
+        `https://www.alfabeta.net/precio/${slug}.html`,
+        {
+            waitUntil: "domcontentloaded"
+        }
+    );
 
-    return new TextDecoder("iso-8859-1").decode(buffer);
+    // Esperar 8 segundos
+    await new Promise(r => setTimeout(r, 8000));
 
+    console.log("URL:", page.url());
+
+    const html = await page.content();
+
+    require("fs").writeFileSync("debug.html", html);
+
+    await browser.close();
+
+    return html;
 }
 
 function limpiarComentarios(html) {
@@ -27,25 +40,37 @@ function limpiarComentarios(html) {
 
 }
 
-function extraerDatos(htmlOriginal) {
+function extraerDatos(html, slug) {
 
-    const ldMatch = htmlOriginal.match(
-        /<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/i
-    );
+    const inicio = html.indexOf('<script type="application/ld+json">');
 
-    if (!ldMatch) {
+    if (inicio === -1) {
         console.log("No se encontró el JSON-LD");
         return null;
     }
 
+    const desdeScript = html.substring(inicio);
+
+    const fin = desdeScript.indexOf("</script>");
+
+    const jsonTexto = desdeScript
+        .substring(0, fin)
+        .replace('<script type="application/ld+json">', '')
+        .trim();
+
     let json;
 
     try {
-        json = JSON.parse(ldMatch[1]);
+
+        json = JSON.parse(jsonTexto);
+
     } catch (e) {
-        console.log("Error parseando JSON-LD");
-        console.log(ldMatch[1]);
+
+        console.log("Error parseando JSON");
+        console.log(jsonTexto);
+
         return null;
+
     }
 
     let droga = "";
@@ -63,17 +88,20 @@ function extraerDatos(htmlOriginal) {
 
         droga = mono?.value || "";
         accion = acc?.value || "";
+
     }
 
     return {
+
         nombre: json.name || "",
-        slug: json.url
-            ? json.url.split("/").pop().replace(".html", "")
-            : "",
+        slug: slug,
+
         laboratorio: json.brand?.name || "",
         droga,
         accion
+
     };
+
 }
 
 (async () => {
@@ -96,8 +124,7 @@ function extraerDatos(htmlOriginal) {
     const completos = JSON.parse(
         fs.readFileSync(ARCHIVO_COMPLETO, "utf8")
     );
-    console.log(ldMatch[1]);
-
+    
     let agregados = 0;
     let existentes = 0;
     let errores = 0;
@@ -126,6 +153,9 @@ function extraerDatos(htmlOriginal) {
 
             const html = await obtenerProducto(slug);
 
+            fs.writeFileSync("debug.html", html, "utf8");
+            console.log("HTML guardado en debug.html");
+
             if (!html) {
 
                 console.log("   ❌ No encontrado\n");
@@ -134,7 +164,7 @@ function extraerDatos(htmlOriginal) {
 
             }
 
-            const datos = extraerDatos(html);
+            const datos = extraerDatos(html, slug);
 
             if (!datos) {
 

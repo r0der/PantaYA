@@ -29776,6 +29776,26 @@
     "slug": "plariv"
   },
   {
+    "nombre": "PLATSUL-A",
+    "slug": "platsula"
+  },
+  {
+    "nombre": "PLATSUL-A AEROSOL",
+    "slug": "platsula-aerosol"
+  },
+  {
+    "nombre": "PLATSUL-A GASA EN ROLLO",
+    "slug": "platsula-gasa-en-rollo"
+  },
+  {
+    "nombre": "PLATSUL-A GASAS",
+    "slug": "platsula-gasas"
+  },
+  {
+    "nombre": "PLATSUL-AG",
+    "slug": "platsulag"
+  },
+  {
     "nombre": "PLAYAL 80",
     "slug": "playal-80"
   },
