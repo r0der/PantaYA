@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vademecum Argentino</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f5f5f7;
+    margin: 0;
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+  }
+  .card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+    padding: 28px;
+    width: 100%;
+    max-width: 420px;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 4px;
+    color: #1d1d1f;
+  }
+  p.subtitle {
+    margin: 0 0 22px;
+    color: #86868b;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+  }
+  .buscador {
+    position: relative;
+    display: flex;
+    gap: 8px;
+  }
+  input {
+    flex: 1;
+    padding: 13px 16px;
+    border-radius: 12px;
+    border: 1px solid #d2d2d7;
+    font-size: 16px;
+    font-family: inherit;
+    width: 100%;
+    background: #fafafa;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  input:focus {
+    outline: none;
+    border-color: #0071e3;
+    background: #fff;
+  }
+  button {
+    background: #0071e3;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 0 20px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  button:hover { background: #0077ed; }
+  button:disabled { background: #d2d2d7; cursor: default; }
+  #sugerencias {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #e5e5e7;
+    border-radius: 12px;
+    margin-top: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+    z-index: 10;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    display: none;
+  }
+  #sugerencias div {
+    padding: 11px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #1d1d1f;
+    transition: background 0.1s;
+  }
+  #sugerencias div:hover { background: #f5f5f7; }
+  #resultado { margin-top: 22px; }
+  .producto {
+    border: 1px solid #e5e5e7;
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .producto h2 {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #1d1d1f;
+  }
+  .error {
+    color: #ff3b30;
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 0;
+  }
+  .loading {
+    text-align: center;
+    color: #86868b;
+    font-size: 14px;
+    padding: 10px 0;
+  }
+
+  .input-wrapper{
+      position:relative;
+      flex:1;
+  }
+
+  .input-wrapper input{
+      width:100%;
+      padding-right:40px;
+  }
+
+  #btnLimpiar{
+
+      position:absolute;
+
+      right:14px;
+      top:50%;
+
+      transform:translateY(-50%);
+
+      font-size:18px;
+
+      color:#999;
+
+      cursor:pointer;
+
+      display:none;
+
+      user-select:none;
+  }
+
+  #q::placeholder {
+    font-size: 13px;
+    color: #808183;
+    opacity: 1;
+  }
+
+  @media (max-width: 380px) {
+    #q::placeholder {
+      font-size: 8px;
+    }
+    #q {
+      padding-right: 34px;
+    }
+  }
+
+  #btnLimpiar:hover{
+      color:#333;
+  }
+
+  .modal-ia {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+
+  .modal-contenido {
+
+    background:white;
+    width:100%;
+    max-width:600px;
+    max-height:80vh;
+    overflow:auto;
+
+    border-radius:20px;
+    padding:25px;
+
+    position:relative;
+
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+
+  }
+
+
+  .cerrar-modal {
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    border:none;
+    background:#f3f4f6;
+    color:#374151;
+    font-size:18px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    padding:0;
+    line-height:1;
+}
+
+
+  #modalTexto {
+
+    margin-top:20px;
+
+    font-size:15px;
+    line-height:1.6;
+    color:#374151;
+
+  }
+
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div style="text-align:center; margin-bottom:22px;">
+  <img src="logo.png" alt="Vademecum Digital" style="width:350px; max-width:100%; height:auto;">
+  <p class="subtitle" style="margin:10px 0 0;">Información de medicamentos, al instante</p>
+</div>
+
+  <div class="buscador">
+
+    <div class="input-wrapper">
+
+        <input
+            type="text"
+            id="q"
+            placeholder="Ej: Isis/Siegfried/drospi..."
+            autocomplete="off">
+
+        <span id="btnLimpiar">✕</span>
+
+    </div>
+
+    <button id="btnBuscar">Buscar</button>
+
+    <div id="sugerencias"></div>
+
+</div>
+
+<p style="margin:8px 4px 0; font-size:12px; color:#9ca3af;">
+  Puede buscar por nombre, droga, laboratorio o acción terapéutica
+</p>
+
+  <div id="resultado"></div>
+</div>
+
+<script>
+  const API_BASE = 'https://vizta-jet.vercel.app';
+
+  const input = document.getElementById('q');
+  const btn = document.getElementById('btnBuscar');
+  const resultado = document.getElementById('resultado');
+  const sugerenciasBox = document.getElementById('sugerencias');
+  const btnLimpiar = document.getElementById('btnLimpiar');
+
+  let ultimoListado = [];
+  let ultimaBusqueda = "";
+  let debounceTimer;
+  let ultimoTotal = 0;
+  let viendoDetalle = false;
+  let scrollListado = 0;
+  let vistaActual = 'inicio';
+  let laboratorioSeleccionado = '';
+
+  input.addEventListener('input', () => {
+    btnLimpiar.style.display =
+    input.value.length ? 'block' : 'none';
+    clearTimeout(debounceTimer);
+
+    const q = input.value.trim();
+    if (q.length < 2) {
+      sugerenciasBox.style.display = 'none';
+      return;
+    }
+    // debounceTimer = setTimeout(() => cargarSugerencias(q), 250);
+  });
+
+  /* async function cargarSugerencias(q) {
+    try {
+      const res = await fetch(API_BASE + '/api/sugerencias?q=' + encodeURIComponent(q));
+      const data = await res.json();
+
+      if (!data.resultados || data.resultados.length === 0) {
+
+        sugerenciasBox.innerHTML = '';
+        sugerenciasBox.scrollTop = 0;
+        sugerenciasBox.style.display = 'none';
+
+        return;
+      }
+
+      let html = data.resultados
+      .map(p => `
+        <div onclick="elegirSugerencia('${p.nombre.replace(/'/g, "\\'")}')">
+          <b>${p.nombre}</b><br>
+          <small style="color:#6b7280;">
+            ${p.droga || ''}${p.laboratorio ? ' - ' + p.laboratorio : ''}
+          </small>
+        </div>
+      `)
+      .join('');
+
+    if (data.total > data.resultados.length) {
+      html += `
+        <div
+          onclick="mostrarTodos()"
+          style="
+            border-top:1px solid #eee;
+            text-align:center;
+            padding:12px;
+            color:#0071e3;
+            font-weight:600;
+            cursor:pointer;
+          ">
+          Ver los ${data.total} resultados
+        </div>
+      `;
+    }
+
+    sugerenciasBox.style.display = 'none';
+
+    sugerenciasBox.innerHTML = html;
+
+    sugerenciasBox.scrollTop = 0;
+
+    sugerenciasBox.style.display = 'block';
+
+    } catch (err) {
+      sugerenciasBox.style.display = 'none';
+    }
+  }
+
+  function elegirSugerencia(nombre) {
+    input.value = nombre;
+    sugerenciasBox.style.display = 'none';
+    buscar();
+  }
+
+  function mostrarTodos() {
+    sugerenciasBox.style.display = 'none';
+    buscarTodos();
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.buscador')) {
+      sugerenciasBox.style.display = 'none';
+    }
+  });
+
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+        buscarTodos();
+    }
+
+}); */
+
+  async function buscar() {
+    const q = input.value.trim();
+    if (!q) return;
+
+    sugerenciasBox.style.display = 'none';
+    btn.disabled = true;
+    resultado.innerHTML = '<p class="loading">Buscando...</p>';
+
+    try {
+      const res = await fetch(API_BASE + '/api/buscar?q=' + encodeURIComponent(q));
+      const data = await res.json();
+
+      if (!res.ok) {
+        resultado.innerHTML = '<p class="error">' + data.error + '</p>';
+        return;
+      }
+
+     const listaPresentaciones = (data.presentaciones || []).map(p => `
+        <div style="padding:10px 0; border-bottom:1px solid #f0f0f0;">
+          <div style="display:flex; justify-content:space-between;">
+            <span style="font-size:14px; color:#374151;">${p.presentacion || 'Presentación'}</span>
+            <span style="font-weight:700; color:#059669;">${p.precio}</span>
+          </div>
+          ${p.fecha ? `<div style="font-size:11px; color:#9ca3af; margin-top:2px;">Actualizado: ${p.fecha}</div>` : ''}
+          ${(p.coberturas || [])
+            .filter(c => c.importes.length > 0)
+            .map(c => `
+              <div style="font-size:12px; color:#6b7280; margin-top:4px;">
+                <b>${c.nombre}</b>${c.descripcion ? ' — ' + c.descripcion : ''}:
+                ${c.importes.map(i => `${i.tipo} ${i.precio}`).join(' / ')}
+              </div>
+            `).join('')}
+        </div>
+      `).join('');
+
+      resultado.innerHTML = `
+  ${viendoDetalle ? `
+    <button 
+      onclick="history.back()"
+      style="
+      background:none;
+      border:none;
+      color:#0071e3;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;
+      margin-bottom:15px;
+      ">
+      ← Volver al listado
+    </button>
+  ` : ''}
+
+  <div class="producto">
+
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    ">
+
+      <h2 style="
+        margin:0;
+        font-size:22px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+      ">
+        ${data.nombre}
+      </h2>
+
+      </div>
+
+      ${data.laboratorio ? `
+      <p style="font-size:13px; color:#6b7280; margin:0 0 8px;">
+        ${data.laboratorio}
+      </p>
+    ` : ''}
+
+
+    ${data.droga ? `
+      <p style="font-size:13px; color:#374151; margin:0 0 4px;">
+        <b>Droga:</b> ${data.droga}
+      </p>
+    ` : ''}
+
+
+    ${data.accion ? `
+      <p style="font-size:13px; color:#374151; margin:0 0 10px;">
+        <b>Acción:</b> ${data.accion}
+      </p>
+    ` : ''}
+
+
+    ${listaPresentaciones}
+
+
+    ${data.descripcion ? `
+      <p style="font-size:12px; color:#9ca3af; margin-top:12px; line-height:1.4;">
+        ${data.descripcion}
+      </p>
+    ` : ''}
+
+
+    <div style="
+  margin-top:18px;
+  text-align:center;
+">
+
+  <button
+    onclick="mostrarInfoIA(
+      '${data.nombre.replace(/'/g, "\\'")}',
+      '${(data.droga || '').replace(/'/g, "\\'")}',
+      '${(data.laboratorio || '').replace(/'/g, "\\'")}',
+      '${(data.accion || '').replace(/'/g, "\\'")}'
+    )"
+    style="
+      background:#eef4ff;
+      border:1px solid #dbe7ff;
+      border-radius:10px;
+      padding:9px 18px;
+      font-size:13px;
+      font-weight:600;
+      color:#2563eb;
+      cursor:pointer;
+    ">
+    ✨ Generar información detallada
+  </button>
+
+  <div style="
+    margin-top:8px;
+    font-size:11px;
+    color:#9ca3af;
+  ">
+    Contenido con IA — puede contener errores
+  </div>
+
+</div>
+
+
+</div>
+`;
+     
+    } catch (err) {
+      resultado.innerHTML = '<p class="error">Error de conexión. Probá de nuevo.</p>';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+  
+    async function buscarTodos() {
+
+    const q = input.value.trim();
+    if (!q) return;
+
+    // Reiniciar filtro de laboratorio
+    laboratorioSeleccionado = '';
+
+    resultado.innerHTML = '<p class="loading">Buscando medicamentos...</p>';
+
+    try {
+
+        const res = await fetch(
+            API_BASE + '/api/buscar-productos?q=' + encodeURIComponent(q)
+        );
+
+        const data = await res.json();
+
+
+        ultimoListado = data.resultados;
+        ultimaBusqueda = q;
+        ultimoTotal = data.total;
+        viendoDetalle = false;
+
+
+        if (!data.resultados || data.resultados.length === 0) {
+
+        // Intentar abrir la ficha directamente en Alfabeta
+        await buscar();
+
+        return;
+}
+
+
+        mostrarListado(data.resultados, q, data.total);
+        
+    } catch (err) {
+
+        console.error(err);
+
+        resultado.innerHTML =
+            '<p class="error">Error al buscar medicamentos.</p>';
+
+    }
+
+}
+
+function mostrarListado(productos, q, total) {
+
+  const laboratorios = [...new Set(
+    productos.map(p => p.laboratorio).filter(Boolean)
+  )].sort();
+
+  let productosFiltrados = productos;
+
+  if (laboratorioSeleccionado) {
+
+      productosFiltrados = productos.filter(
+          p => p.laboratorio === laboratorioSeleccionado
+      );
+
+  }
+
+    resultado.innerHTML = `
+
+    <div style="margin-bottom:20px;">
+        <div style="font-size:28px;font-weight:700;color:#1d1d1f;">
+            ${productosFiltrados.length}
+        </div>
+
+        <div style="color:#6b7280;font-size:14px;">
+            medicamentos encontrados
+        </div>
+
+        <div style="margin-top:8px;font-size:14px;color:#374151;">
+            Resultados para:
+            <b>${q}</b>
+        </div>
+
+        <div style="margin-top:18px;">
+
+    <select
+        id="filtroLaboratorio"
+        onchange="filtrarLaboratorio()"
+        style="
+            width:100%;
+            padding:12px;
+            border:1px solid #d1d5db;
+            border-radius:12px;
+            font-size:15px;
+            background:white;
+        ">
+
+        <option value=""
+          ${laboratorioSeleccionado === '' ? 'selected' : ''}>
+          Todos los laboratorios
+      </option>
+
+        ${laboratorios.map(l => `
+          <option
+              value="${l}"
+              ${laboratorioSeleccionado === l ? 'selected' : ''}>
+              ${l}
+          </option>
+      `).join('')}
+
+    </select>
+
+</div>
+    </div>
+
+    ` + productosFiltrados.map(p => `
+
+    <div
+        onclick="buscarProducto('${p.nombre.replace(/'/g, "\\'")}')"
+        style="
+            background:#fff;
+            border:1px solid #e5e5e7;
+            border-radius:16px;
+            padding:16px;
+            margin-bottom:12px;
+            cursor:pointer;
+            transition:.15s;
+        "
+    >
+
+        <div style="font-size:18px;font-weight:700;color:#1d1d1f;">
+            ${p.nombre}
+        </div>
+
+        <div style="margin-top:8px;font-size:14px;color:#4b5563;">
+            ${p.droga || '-'}
+        </div>
+
+        ${p.laboratorio ? `
+        <div style="margin-top:8px;">
+          <span style="
+            display:inline-block;
+            background:#f2f2f7;
+            color:#3c3c43;
+            font-size:12px;
+            font-weight:600;
+            padding:4px 12px;
+            border-radius:999px;
+          ">
+            ${p.laboratorio}
+          </span>
+        </div>
+        ` : ''}
+
+        <div style="
+            margin-top:12px;
+            color:#0071e3;
+            font-weight:600;
+            font-size:14px;
+            text-align:right;
+        ">
+            Ver producto →
+        </div>
+    </div>
+
+    `).join('');
+
+}
+
+  function filtrarLaboratorio() {
+
+    laboratorioSeleccionado =
+        document.getElementById('filtroLaboratorio').value;
+
+    mostrarListado(
+        ultimoListado,
+        ultimaBusqueda,
+        ultimoTotal
+    );
+
+}
+
+  function volverAlListado() {
+
+    vistaActual = 'listado';
+    viendoDetalle = false;
+
+    if (!ultimoListado) return;
+
+    input.value = ultimaBusqueda;
+
+    mostrarListado(
+        ultimoListado,
+        ultimaBusqueda,
+        ultimoTotal
+    );
+
+    setTimeout(() => {
+
+        window.scrollTo({
+            top: scrollListado,
+            behavior: "instant"
+        });
+
+    }, 50);
+
+}
+
+  function buscarProducto(nombre){
+
+    scrollListado = window.scrollY;
+
+    viendoDetalle = true;
+    vistaActual = 'detalle';
+
+    history.pushState(
+        {
+            vista: 'detalle'
+        },
+        '',
+        '#producto'
+    );
+
+    input.value = nombre;
+
+    buscar();
+
+}
+
+  btn.addEventListener('click', buscarTodos);
+  input.addEventListener('keydown', (e) => {
+
+    if (e.key === 'Enter') {
+
+        e.preventDefault();
+        buscarTodos();
+
+      }
+
+    });
+
+  btnLimpiar.addEventListener('click', () => {
+
+    input.value='';
+
+    resultado.innerHTML='';
+
+    sugerenciasBox.style.display='none';
+
+    btnLimpiar.style.display='none';
+
+    input.focus();
+
+});
+
+async function mostrarInfoIA(nombre, droga, laboratorio, accion) {
+
+
+    const modal = document.getElementById('modalIA');
+    const titulo = document.getElementById('modalTitulo');
+    const texto = document.getElementById('modalTexto');
+
+
+    titulo.innerHTML = nombre;
+
+    texto.innerHTML = `
+        <div class="loading">
+        ✨ Generando información...
+        </div>
+    `;
+
+
+    modal.style.display = 'flex';
+
+
+    try {
+
+
+        const res = await fetch(
+            API_BASE +
+            '/api/info-ia?' +
+            new URLSearchParams({
+
+                nombre,
+                droga,
+                laboratorio,
+                accion
+
+            })
+        );
+
+
+        const data = await res.json();
+
+        if (!res.ok || !data.texto) {
+            throw new Error(data.error || "Respuesta inválida de IA");
+        }
+
+        texto.innerHTML = data.texto.replace(/\n/g, '<br>');
+
+
+    } catch(error) {
+
+    console.error(error);
+
+    texto.innerHTML =
+    "No se pudo generar la información.<br><small>" +
+    error.message +
+    "</small>";
+
+}
+
+}
+
+function cerrarModalIA(){
+
+    document.getElementById('modalIA').style.display='none';
+
+}
+
+window.addEventListener('load', () => {
+
+    const modalIA = document.getElementById('modalIA');
+
+    modalIA.addEventListener('click', function(e) {
+
+        if (e.target === modalIA) {
+            cerrarModalIA();
+        }
+
+    });
+
+});
+
+window.addEventListener('popstate', () => {
+
+    if (viendoDetalle) {
+
+        volverAlListado();
+        return;
+
+    }
+
+});
+
+</script>
+
+<div id="modalIA" class="modal-ia">
+
+  <div class="modal-contenido">
+
+    <div style="
+      position:sticky;
+      top:12px;
+      height:0;
+      display:flex;
+      justify-content:flex-end;
+      z-index:10;
+    ">
+      <button class="cerrar-modal" onclick="cerrarModalIA()">✕</button>
+    </div>
+
+    <h2 id="modalTitulo" style="margin-top:44px;">Más información</h2>
+    <div id="modalTexto">Generando información...</div>
+
+  </div>
+
+</div>
+
+
+</body>
+</html>
