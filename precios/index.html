@@ -46,7 +46,7 @@
     padding: 13px 16px;
     border-radius: 12px;
     border: 1px solid #d2d2d7;
-    font-size: 15px;
+    font-size: 16px;
     font-family: inherit;
     width: 100%;
     background: #fafafa;
@@ -152,13 +152,13 @@
 
   #q::placeholder {
     font-size: 13px;
-    color: #6b7280;
+    color: #808183;
     opacity: 1;
   }
 
   @media (max-width: 380px) {
     #q::placeholder {
-      font-size: 9px;
+      font-size: 8px;
     }
     #q {
       padding-right: 34px;
@@ -243,7 +243,7 @@
         <input
             type="text"
             id="q"
-            placeholder="Ej: isis, Siegfried, anticonceptivo"
+            placeholder="Ej: Isis, Siegfried, drospi..."
             autocomplete="off">
 
         <span id="btnLimpiar">✕</span>
@@ -681,8 +681,9 @@ function mostrarListado(productos, q, total) {
             font-size:14px;
             text-align:right;
         ">
-            Ver ficha →
+            Ver producto →
         </div>
+    </div>
 
     `).join('');
 
@@ -870,23 +871,21 @@ window.addEventListener('popstate', () => {
 
   <div class="modal-contenido">
 
-  <div style="
-    position:sticky;
-    top:0;
-    display:flex;
-    justify-content:flex-end;
-    background:#fff;
-    margin:-25px -25px 0;
-    padding:12px 12px 0;
-    z-index:10;
-  ">
-    <button class="cerrar-modal" onclick="cerrarModalIA()">✕</button>
+    <div style="
+      position:sticky;
+      top:12px;
+      height:0;
+      display:flex;
+      justify-content:flex-end;
+      z-index:10;
+    ">
+      <button class="cerrar-modal" onclick="cerrarModalIA()">✕</button>
+    </div>
+
+    <h2 id="modalTitulo" style="margin-top:44px;">Más información</h2>
+    <div id="modalTexto">Generando información...</div>
+
   </div>
-
-  <h2 id="modalTitulo" style="margin-top:10px;">Más información</h2>
-  <div id="modalTexto">Generando información...</div>
-
-</div>
 
 </div>
 
