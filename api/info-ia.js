@@ -109,20 +109,7 @@ Separar cada sección D.A.V.I.D. con dos saltos de línea.
 
 Ejemplo:
 
-D - DESCRIPCIÓN
-Contenido de la descripción.
-
-A - ACCIÓN
-Contenido de la acción.
-
-V - VENTAJAS
-Contenido de las ventajas.
-
-I - INDICACIONES
-Contenido de las indicaciones.
-
-D - DOSIFICACIÓN
-Contenido de la dosificación.
+<b>D - DESCRIPCIÓN</b><br>Contenido de la descripción.<br><br><b>A - ACCIÓN</b><br>Contenido de la acción.<br><br><b>V - VENTAJAS</b><br>Contenido de las ventajas.<br><br><b>I - INDICACIONES</b><br>Contenido de las indicaciones.<br><br><b>D - DOSIFICACIÓN</b><br>Contenido de la dosificación.
 
 No escribir todas las secciones juntas en un mismo bloque de texto.
 
@@ -138,9 +125,9 @@ FORMATO DE RESPUESTA:
 - No utilizar Markdown.
 - No usar símbolos como #, *, -, ni numerales.
 - Utilizar títulos simples en mayúscula.
-- Resaltar los títulos con negrita usando formato HTML.
-- Separar cada sección con saltos de línea.
-- La respuesta debe estar lista para mostrarse directamente dentro de una interfaz web.
+- Resaltar los títulos con negrita usando la etiqueta HTML <b>...</b>.
+- Separar cada sección con la etiqueta HTML <br><br> (no uses saltos de línea de texto plano).
+- La respuesta debe ser HTML válido, lista para insertarse directamente con innerHTML en una página web.
 
 `;
 

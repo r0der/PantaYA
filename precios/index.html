@@ -156,6 +156,15 @@
     opacity: 1;
   }
 
+  @media (max-width: 380px) {
+    #q::placeholder {
+      font-size: 9px;
+    }
+    #q {
+      padding-right: 34px;
+    }
+  }
+
   #btnLimpiar:hover{
       color:#333;
   }
@@ -190,28 +199,18 @@
 
 
   .cerrar-modal {
-    position:absolute;
-    top:12px;
-    right:12px;
-
     width:32px;
     height:32px;
-
     border-radius:50%;
     border:none;
-
     background:#f3f4f6;
     color:#374151;
-
     font-size:18px;
     font-weight:600;
-
     display:flex;
     align-items:center;
     justify-content:center;
-
     cursor:pointer;
-
     padding:0;
     line-height:1;
 }
@@ -232,10 +231,10 @@
 <body>
 
 <div class="card">
-  <h1 style="font-size:22px; font-weight:700; letter-spacing:-0.02em; margin:0 0 2px; color:#1d1d1f;">
-  Vademecum<span style="color:#0071e3;"> Digital</span>
-</h1>
-<p class="subtitle" style="margin:0 0 22px;">Precios y datos de medicamentos, al instante</p>
+  <div style="text-align:center; margin-bottom:22px;">
+  <img src="logo.png" alt="Vademecum Digital" style="width:350px; max-width:100%; height:auto;">
+  <p class="subtitle" style="margin:10px 0 0;">Información de medicamentos, al instante</p>
+</div>
 
   <div class="buscador">
 
@@ -244,7 +243,7 @@
         <input
             type="text"
             id="q"
-            placeholder="Ej: isis / drospirenona / Siegfried"
+            placeholder="Ej: isis, Siegfried, anticonceptivo"
             autocomplete="off">
 
         <span id="btnLimpiar">✕</span>
@@ -256,6 +255,10 @@
     <div id="sugerencias"></div>
 
 </div>
+
+<p style="margin:8px 4px 0; font-size:12px; color:#9ca3af;">
+  Puede buscar por nombre, droga, laboratorio o acción terapéutica
+</p>
 
   <div id="resultado"></div>
 </div>
@@ -505,7 +508,7 @@
     font-size:11px;
     color:#9ca3af;
   ">
-    Puede contener técnica D.A.V.I.D.
+    Contenido con IA — puede contener errores
   </div>
 
 </div>
@@ -566,26 +569,6 @@
 
     }
 
-}
-
-const paletaChips = [
-  { bg: '#e8f0fe', color: '#1a56db' }, // azul
-  { bg: '#fce8f3', color: '#c2185b' }, // rosa
-  { bg: '#e6f4ea', color: '#1e7e34' }, // verde
-  { bg: '#fff4e5', color: '#b45309' }, // naranja
-  { bg: '#f3e8fd', color: '#7c3aed' }, // violeta
-  { bg: '#e0f7fa', color: '#00838f' }, // celeste
-  { bg: '#fdeaea', color: '#c62828' }, // rojo suave
-  { bg: '#f0f4c3', color: '#827717' }, // oliva
-];
-
-function colorParaLaboratorio(nombre) {
-  let hash = 0;
-  for (let i = 0; i < nombre.length; i++) {
-    hash = nombre.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const index = Math.abs(hash) % paletaChips.length;
-  return paletaChips[index];
 }
 
 function mostrarListado(productos, q, total) {
@@ -671,28 +654,16 @@ function mostrarListado(productos, q, total) {
             ${p.nombre}
         </div>
 
-        ${p.droga ? `
-        <div style="margin-top:8px;">
-          <span style="
-            display:inline-block;
-            background:${colorParaLaboratorio(p.droga).bg};
-            color:${colorParaLaboratorio(p.droga).color};
-            font-size:12px;
-            font-weight:600;
-            padding:4px 12px;
-            border-radius:999px;
-          ">
-            ${p.droga}
-          </span>
+        <div style="margin-top:8px;font-size:14px;color:#4b5563;">
+            ${p.droga || '-'}
         </div>
-        ` : ''}
 
         ${p.laboratorio ? `
         <div style="margin-top:8px;">
           <span style="
             display:inline-block;
-            background:${colorParaLaboratorio(p.laboratorio).bg};
-            color:${colorParaLaboratorio(p.laboratorio).color};
+            background:#f2f2f7;
+            color:#3c3c43;
             font-size:12px;
             font-weight:600;
             padding:4px 12px;
@@ -708,11 +679,10 @@ function mostrarListado(productos, q, total) {
             color:#0071e3;
             font-weight:600;
             font-size:14px;
+            text-align:right;
         ">
-            Ver producto →
+            Ver ficha →
         </div>
-
-    </div>
 
     `).join('');
 
@@ -847,7 +817,7 @@ async function mostrarInfoIA(nombre, droga, laboratorio, accion) {
             throw new Error(data.error || "Respuesta inválida de IA");
         }
 
-        texto.innerHTML = data.texto;
+        texto.innerHTML = data.texto.replace(/\n/g, '<br>');
 
 
     } catch(error) {
@@ -900,19 +870,23 @@ window.addEventListener('popstate', () => {
 
   <div class="modal-contenido">
 
-    <button class="cerrar-modal" onclick="cerrarModalIA()">
-      ✕
-    </button>
-
-    <h2 id="modalTitulo">
-      Más información
-    </h2>
-
-    <div id="modalTexto">
-      Generando información...
-    </div>
-
+  <div style="
+    position:sticky;
+    top:0;
+    display:flex;
+    justify-content:flex-end;
+    background:#fff;
+    margin:-25px -25px 0;
+    padding:12px 12px 0;
+    z-index:10;
+  ">
+    <button class="cerrar-modal" onclick="cerrarModalIA()">✕</button>
   </div>
+
+  <h2 id="modalTitulo" style="margin-top:10px;">Más información</h2>
+  <div id="modalTexto">Generando información...</div>
+
+</div>
 
 </div>
 
