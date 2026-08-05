@@ -108,11 +108,13 @@ function extraerDatos(htmlOriginal) {
   const presentaciones = bloques.map(bloque => {
     const descMatch = bloque.match(/<td class="tddesc"[^>]*>([^<]*)/);
     const precioMatch = bloque.match(/<td class="tdprecio"[^>]*>\$([\d.,]+)/);
+    const fechaMatch = bloque.match(/<td class="tdfecha"[^>]*>\(?([^<)]+)\)?<\/td>/);
     const coberturas = extraerCoberturas(bloque);
 
     return {
       presentacion: descMatch ? descMatch[1].trim() : null,
       precio: precioMatch ? `$${precioMatch[1]}` : null,
+      fecha: fechaMatch ? fechaMatch[1].trim() : null,
       coberturas
     };
   }).filter(p => p.precio);
