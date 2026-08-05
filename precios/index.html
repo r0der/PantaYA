@@ -375,8 +375,6 @@
     const q = input.value.trim();
     if (!q) return;
 
-    laboratorioSeleccionado = '';
-
     sugerenciasBox.style.display = 'none';
     btn.disabled = true;
     resultado.innerHTML = '<p class="loading">Buscando...</p>';
@@ -570,6 +568,26 @@
 
 }
 
+const paletaChips = [
+  { bg: '#e8f0fe', color: '#1a56db' }, // azul
+  { bg: '#fce8f3', color: '#c2185b' }, // rosa
+  { bg: '#e6f4ea', color: '#1e7e34' }, // verde
+  { bg: '#fff4e5', color: '#b45309' }, // naranja
+  { bg: '#f3e8fd', color: '#7c3aed' }, // violeta
+  { bg: '#e0f7fa', color: '#00838f' }, // celeste
+  { bg: '#fdeaea', color: '#c62828' }, // rojo suave
+  { bg: '#f0f4c3', color: '#827717' }, // oliva
+];
+
+function colorParaLaboratorio(nombre) {
+  let hash = 0;
+  for (let i = 0; i < nombre.length; i++) {
+    hash = nombre.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % paletaChips.length;
+  return paletaChips[index];
+}
+
 function mostrarListado(productos, q, total) {
 
   const laboratorios = [...new Set(
@@ -653,13 +671,37 @@ function mostrarListado(productos, q, total) {
             ${p.nombre}
         </div>
 
-        <div style="margin-top:8px;font-size:14px;color:#4b5563;">
-            ${p.droga || '-'}
+        ${p.droga ? `
+        <div style="margin-top:8px;">
+          <span style="
+            display:inline-block;
+            background:${colorParaLaboratorio(p.droga).bg};
+            color:${colorParaLaboratorio(p.droga).color};
+            font-size:12px;
+            font-weight:600;
+            padding:4px 12px;
+            border-radius:999px;
+          ">
+            ${p.droga}
+          </span>
         </div>
+        ` : ''}
 
-        <div style="margin-top:4px;font-size:14px;color:#6b7280;">
-            ${p.laboratorio || '-'}
+        ${p.laboratorio ? `
+        <div style="margin-top:8px;">
+          <span style="
+            display:inline-block;
+            background:${colorParaLaboratorio(p.laboratorio).bg};
+            color:${colorParaLaboratorio(p.laboratorio).color};
+            font-size:12px;
+            font-weight:600;
+            padding:4px 12px;
+            border-radius:999px;
+          ">
+            ${p.laboratorio}
+          </span>
         </div>
+        ` : ''}
 
         <div style="
             margin-top:12px;
@@ -667,7 +709,7 @@ function mostrarListado(productos, q, total) {
             font-weight:600;
             font-size:14px;
         ">
-            Ver ficha →
+            Ver producto →
         </div>
 
     </div>
