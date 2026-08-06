@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vademecum Argentino</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0071e3">
+<link rel="apple-touch-icon" href="logo-192.png">
+
 <style>
   * { box-sizing: border-box; }
   body {
@@ -225,6 +229,32 @@
     color:#374151;
 
   }
+
+  .modal-pwa .modal-contenido {
+  max-width: 380px;
+  text-align: center;
+  }
+.pwa-pasos {
+  text-align: left;
+  font-size: 14px;
+  color: #374151;
+  margin-top: 16px;
+  line-height: 1.8;
+  }
+.pwa-botones {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  }
+.pwa-botones button {
+  flex: 1;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
 
 </style>
 </head>
@@ -866,6 +896,54 @@ window.addEventListener('popstate', () => {
 
 });
 
+let deferredPrompt = null;
+
+function esIOS() {
+  return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+}
+
+function yaEstaInstalada() {
+  return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!yaEstaInstalada() && !sessionStorage.getItem('pwaCerrado')) {
+    mostrarModalPWA();
+  }
+});
+
+window.addEventListener('load', () => {
+  if (esIOS() && !yaEstaInstalada() && !sessionStorage.getItem('pwaCerrado')) {
+    setTimeout(mostrarModalPWA, 1500);
+  }
+});
+
+function mostrarModalPWA() {
+  const modal = document.getElementById('modalPWA');
+  document.getElementById('pwaContenidoAndroid').style.display = esIOS() ? 'none' : 'block';
+  document.getElementById('pwaContenidoIOS').style.display = esIOS() ? 'block' : 'none';
+  modal.style.display = 'flex';
+}
+
+function cerrarModalPWA() {
+  document.getElementById('modalPWA').style.display = 'none';
+  sessionStorage.setItem('pwaCerrado', '1');
+}
+
+async function instalarPWA() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  cerrarModalPWA();
+}
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+
 </script>
 
 <div id="modalIA" class="modal-ia">
@@ -888,6 +966,33 @@ window.addEventListener('popstate', () => {
 
   </div>
 
+</div>
+
+<div id="modalPWA" class="modal-ia modal-pwa">
+  <div class="modal-contenido">
+    <button class="cerrar-modal" onclick="cerrarModalPWA()" style="position:absolute; top:16px; right:16px;">✕</button>
+    <img src="logo-192.png" style="width:64px; height:64px; border-radius:16px; margin-top:8px;">
+    <h2 style="margin:14px 0 4px; font-size:18px;">Instalar Vademecum</h2>
+    <p style="font-size:14px; color:#6b7280; margin:0;">Accedé más rápido, como una app.</p>
+
+    <div id="pwaContenidoAndroid" style="display:none;">
+      <div class="pwa-botones">
+        <button onclick="cerrarModalPWA()" style="background:#f2f2f7; color:#374151;">Ahora no</button>
+        <button onclick="instalarPWA()" style="background:#0071e3; color:#fff;">Instalar</button>
+      </div>
+    </div>
+
+    <div id="pwaContenidoIOS" style="display:none;">
+      <div class="pwa-pasos">
+        1. Tocá opciones de la barra del navegador (tres lineas al lado del nombre de la web) <br><br>
+        2. Tocá <b>Compartir</b>, deslizá hacia abajo y elegí <b>"Agregar a inicio"</b>.<br><br>
+        3. Confirmá tocando <b>"Agregar"</b> arriba a la derecha.
+      </div>
+      <div class="pwa-botones">
+        <button onclick="cerrarModalPWA()" style="background:#f2f2f7; color:#374151; width:100%;">Entendido</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 
