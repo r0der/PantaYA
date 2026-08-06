@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     const data = extraerDatos(html);
 
     if (!data.presentaciones || data.presentaciones.length === 0) {
-      return res.status(404).json({ error: 'No se pudo extraer el precio de esa página.' });
+      return res.status(404).json({ error: 'No se pudo extraer el producto.' });
     }
 
     return res.status(200).json(data);

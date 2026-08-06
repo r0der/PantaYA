@@ -155,8 +155,8 @@
   }
 
   #q::placeholder {
-    font-size: 13px;
-    color: #808183;
+    font-size: 12px;
+    color: #9ca3af;
     opacity: 1;
   }
 
@@ -262,7 +262,7 @@
 
 <div class="card">
   <div style="text-align:center; margin-bottom:22px;">
-  <img src="logo.png" alt="Vademecum Digital" style="width:350px; max-width:100%; height:auto;">
+  <img src="logo.png" alt="Vademecum Digital" style="width:300px; max-width:100%; height:auto;">
   <p class="subtitle" style="margin:10px 0 0;">Información de medicamentos, al instante</p>
 </div>
 
@@ -273,7 +273,7 @@
         <input
             type="text"
             id="q"
-            placeholder="Ej: Isis/Siegfried/drospi..."
+            placeholder="Ej: Isis/Siegfried/drospirenona"
             autocomplete="off">
 
         <span id="btnLimpiar">✕</span>
@@ -287,7 +287,7 @@
 </div>
 
 <p style="margin:8px 4px 0; font-size:12px; color:#9ca3af;">
-  Puede buscar por nombre, droga, laboratorio o acción terapéutica
+  Puede buscar por nombre, droga, laboratorio o acción terapéutica.
 </p>
 
   <div id="resultado"></div>
@@ -312,8 +312,9 @@
   let laboratorioSeleccionado = '';
 
   input.addEventListener('input', () => {
-    btnLimpiar.style.display =
-    input.value.length ? 'block' : 'none';
+    const hayTexto = input.value.length > 0;
+    btnLimpiar.style.display = hayTexto ? 'block' : 'none';
+    input.style.paddingRight = hayTexto ? '40px' : '16px';
     clearTimeout(debounceTimer);
 
     const q = input.value.trim();
@@ -427,7 +428,7 @@
             <span style="font-size:14px; color:#374151;">${p.presentacion || 'Presentación'}</span>
             <span style="font-weight:700; color:#059669;">${p.precio}</span>
           </div>
-          ${p.fecha ? `<div style="font-size:11px; color:#9ca3af; margin-top:2px;">Actualizado: ${p.fecha}</div>` : ''}
+          ${p.fecha ? `<div style="font-size:11px; color:#9ca3af; margin-top:2px; text-align:right;">Actualizado: ${p.fecha}</div>` : ''}
           ${(p.coberturas || [])
             .filter(c => c.importes.length > 0)
             .map(c => `
@@ -539,7 +540,7 @@
     font-size:11px;
     color:#9ca3af;
   ">
-    Contenido con IA — puede contener errores
+    Con asistencia de IA — Puede contener errores - No reemplaza indicación médica profesional.
   </div>
 
 </div>
@@ -972,7 +973,7 @@ if ('serviceWorker' in navigator) {
   <div class="modal-contenido">
     <button class="cerrar-modal" onclick="cerrarModalPWA()" style="position:absolute; top:16px; right:16px;">✕</button>
     <img src="logo-192.png" style="width:64px; height:64px; border-radius:16px; margin-top:8px;">
-    <h2 style="margin:14px 0 4px; font-size:18px;">Instalar Vademecum</h2>
+    <h2 style="margin:14px 0 4px; font-size:18px;">Instalar VA</h2>
     <p style="font-size:14px; color:#6b7280; margin:0;">Accedé más rápido, como una app.</p>
 
     <div id="pwaContenidoAndroid" style="display:none;">
