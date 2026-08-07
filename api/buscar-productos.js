@@ -1,20 +1,8 @@
 import productos from '../data/productos-completo.json' with { type: 'json' };
 
-export default async function handler(req, res) {
-
-    const origin = req.headers.origin;
-
-    const allowedOrigins = [
-        'https://vizta.lat',
-        'https://www.vizta.lat'
-    ];
-
-    if (allowedOrigins.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-    }
-
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+export default function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', 'https://vizta.lat');
+  res.setHeader('Access-Control-Allow-Methods', 'GET');
 
   const { q } = req.query;
 
