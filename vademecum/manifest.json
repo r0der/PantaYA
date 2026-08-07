@@ -1,7 +1,7 @@
 {
   "name": "Vademecum Argentino",
   "short_name": "Vademecum",
-  "start_url": "./index.html",
+  "start_url": "./vademecum/index.html",
   "display": "standalone",
   "background_color": "#f5f5f7",
   "theme_color": "#0071e3",
