@@ -674,7 +674,7 @@ function mostrarListado(productos, q, total) {
     ` + productosFiltrados.map(p => `
 
     <div
-        onclick="buscarProducto('${p.nombre.replace(/'/g, "\\'")}')"
+        onclick="buscarProducto('${p.slug}')"
         style="
             background:#fff;
             border:1px solid #e5e5e7;
