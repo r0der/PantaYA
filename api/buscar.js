@@ -1,14 +1,11 @@
-export default async function handler(req, res) {
+export default function handler(req, res) {
 
   res.setHeader(
     'Access-Control-Allow-Origin',
-    'https://vizta.lat'
+    'https://vademecum.vizta.lat'
   );
 
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET'
-  );
+  res.setHeader('Access-Control-Allow-Methods', 'GET');
 
   const { q } = req.query;
 

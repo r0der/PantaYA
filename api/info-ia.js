@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   res.setHeader(
     'Access-Control-Allow-Origin',
-    'https://vizta.lat'
+    'https://vademecum.vizta.lat'
   );
 
   res.setHeader(

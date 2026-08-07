@@ -2,7 +2,11 @@ import productos from '../data/productos-completo.json' with { type: 'json' };
 
 export default function handler(req, res) {
 
-  res.setHeader('Access-Control-Allow-Origin', 'https://vizta.lat');
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    'https://vademecum.vizta.lat'
+  );
+
   res.setHeader('Access-Control-Allow-Methods', 'GET');
 
   const { q } = req.query;
