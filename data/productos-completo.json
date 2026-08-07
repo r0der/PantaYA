@@ -1,4 +1,12 @@
 [
+
+  {
+  "nombre": "COX-QUIN",
+  "slug": "coxquin",
+  "laboratorio": "Finadiet",
+  "droga": "Etoricoxib",
+  "accion": ""
+}
   {
     "nombre": "102 FOCUS",
     "slug": "102-focus",
