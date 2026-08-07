@@ -1,11 +1,23 @@
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', 'https://vizta.lat');
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
+
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    'https://vizta.lat'
+  );
+
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET'
+  );
 
   const { q } = req.query;
-  if (!q) return res.status(400).json({ error: 'Falta el parámetro q' });
+
+  if (!q) {
+    return res.status(400).json({ error: 'Falta el parámetro q' });
+  }
 
   const slug = normalizar(q);
+
   const url = `https://www.alfabeta.net/precio/${slug}.html`;
 
   try {
