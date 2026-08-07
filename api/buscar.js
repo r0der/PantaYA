@@ -26,8 +26,10 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
-      return res.status(404).json({ error: 'No encontrado. Probá con el nombre comercial exacto (ej: "acemuk l").' });
-    }
+  return res.status(404).json({ 
+    error: `Sin resultados para "${q}", verifique.` 
+  });
+}
 
     const buffer = await response.arrayBuffer();
     const html = new TextDecoder('iso-8859-1').decode(buffer);
@@ -38,8 +40,10 @@ export default async function handler(req, res) {
     const data = extraerDatos(html);
 
     if (!data.presentaciones || data.presentaciones.length === 0) {
-      return res.status(404).json({ error: 'No se pudo extraer el producto.' });
-    }
+  return res.status(404).json({ 
+    error: `Sin resultados para "${q}", verifique.` 
+  });
+}
 
     return res.status(200).json(data);
   } catch (err) {
