@@ -2,6 +2,36 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "vizta.lat"
+        }
+      ],
+      "destination": "/peliculas.html"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.vizta.lat"
+        }
+      ],
+      "destination": "/peliculas.html"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "vademecum.vizta.lat"
+        }
+      ],
+      "destination": "/vademecum/index.html"
+    },
+    {
       "source": "/:path*",
       "has": [
         {
