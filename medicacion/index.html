@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía de Medicación</title>
+<style>
+  @page { size: A4; margin: 9mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #ffffff; color: #1c1c1e;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .page { max-width: 960px; margin: 0 auto; padding: 6mm 5mm; }
+  .masthead {
+    display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 2mm;
+    border-bottom: 2.2px solid #1c1c1e; padding-bottom: 2.2mm; margin-bottom: 3.4mm;
+  }
+  .masthead h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; margin: 0; }
+  .masthead .sub { font-size: 11px; color: #6e6e73; font-weight: 500; letter-spacing: 0.2px; }
+
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 4mm;
+    align-items: start;
+  }
+  .cat-block { width: 100%; }
+  .cat-header { display: flex; align-items: center; gap: 1.6mm; margin-bottom: 1.2mm; }
+  .cat-badge {
+    background: var(--accent); color: #fff; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.3px; text-transform: uppercase; padding: 1.4mm 3mm; border-radius: 4mm;
+  }
+  .cards-grid { display: flex; flex-direction: column; gap: 1.4mm; }
+  .card {
+    background: var(--bg); border-radius: 2.4mm; padding: 2mm 3mm;
+    border: 0.3mm solid var(--accent);
+  }
+  .card-top { display: flex; align-items: center; justify-content: space-between; gap: 1.4mm; margin-bottom: 0.4mm; }
+  .name-wrap { display: flex; align-items: center; gap: 1.4mm; min-width: 0; }
+  .dot { width: 1.8mm; height: 1.8mm; min-width: 1.8mm; border-radius: 50%; background: var(--accent); }
+  .name { font-size: 12px; font-weight: 700; color: #1c1c1e; letter-spacing: -0.1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .drug { font-size: 10.5px; color: #3a3a3c; font-weight: 500; line-height: 1.3; margin-left: 3.2mm; }
+  .pres { font-size: 10px; color: #8a8a8e; font-weight: 500; font-style: italic; margin-left: 3.2mm; margin-top: 0.3mm; }
+
+  .pap-badge {
+    background: #E9F7EE;
+    color: #1F8A4C;
+    border: 1px solid #4CAF6D;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.1px;
+    padding: 0.6mm 2mm;
+    border-radius: 3mm;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .footer {
+    margin-top: 4mm; padding-top: 2mm; border-top: 0.3mm solid #e5e5ea;
+    font-size: 10px; color: #b0b0b5; text-align: center; letter-spacing: 0.3px;
+  }
+
+  @media (max-width: 700px) {
+    .cols { grid-template-columns: 1fr; }
+    .masthead h1 { font-size: 18px; }
+  }
+
+  @media print {
+    .cols { grid-template-columns: repeat(3, 1fr); }
+    .page { max-width: none; padding: 0; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="masthead">
+      <h1>Guía de Medicación</h1>
+      <span class="sub">54 PRODUCTOS · 12 CATEGORÍAS</span>
+    </div>
+    <div class="cols">
+      <section class="cat-block" style="--accent:#2E8FCC; --bg:#E8F4FB;">
+      <div class="cat-header"><span class="cat-badge">Mucolítico</span></div>
+      <div class="cards-grid"><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ACEMUK 200</span></span>
+            
+          </div>
+          <div class="drug">N-Acetilcisteina 200 mg</div>
+          <div class="pres">10 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ACEMUK 600</span></span>
+            
+          </div>
+          <div class="drug">N-Acetilcisteina 600 mg</div>
+          <div class="pres">10 x 20 x 60 comprimidos efervescentes</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ACEMUK BIOTIC DUO</span></span>
+            
+          </div>
+          <div class="drug">Amoxicilina 875 mg + N-Acetilcisteína 300 mg</div>
+          <div class="pres">16 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ACEMUK DIA Y NOCHE</span></span>
+            
+          </div>
+          <div class="drug">DÍA: N-Acetilcisteína 200 mg + Pseudoefedrina 40 mg + Paracet. 500 mg | NOCHE: Clorfeniramina 4 mg + Paracetamol 500 mg</div>
+          <div class="pres">16 comprimidos efervescentes</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ACEMUK GRIP</span></span>
+            
+          </div>
+          <div class="drug">N-Acetilcisteína 200 mg + Paracetamol 500 mg</div>
+          <div class="pres">10 comprimidos efervescentes</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ACEMUK JARABE</span></span>
+            
+          </div>
+          <div class="drug">N-Acetilcisteína 2%</div>
+          <div class="pres">40 g granulado para preparar - 100 ml</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ACEMUK L</span></span>
+            
+          </div>
+          <div class="drug">N-Acetilcisteína 100 mg + Tirotricina 8 mg + Lidocaína 1 mg</div>
+          <div class="pres">20 comprimidos de disolución bucal</div>
+        </div></div>
+    </section><section class="cat-block" style="--accent:#2FA36A; --bg:#EAF7EF;">
+      <div class="cat-header"><span class="cat-badge">Antiasmático</span></div>
+      <div class="cards-grid"><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">AIREAL 4</span></span>
+            
+          </div>
+          <div class="drug">Montelukast 4 mg</div>
+          <div class="pres">30 y 60 comprimidos masticables</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">AIREAL 5</span></span>
+            
+          </div>
+          <div class="drug">Montelukast 5 mg</div>
+          <div class="pres">30 y 60 comprimidos masticables</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">AIREAL 10</span></span>
+            
+          </div>
+          <div class="drug">Montelukast 10 mg</div>
+          <div class="pres">30 y 60 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">AIREAL PLUS</span></span>
+            
+          </div>
+          <div class="drug">Montelukast 10 mg + Levocetirizina 5 mg</div>
+          <div class="pres">30 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">HEXALER BRONQUIAL 200 / 400</span></span>
+            
+          </div>
+          <div class="drug">Mometasona 200 mcg / 400 mcg</div>
+          <div class="pres">30 cápsulas para inhalar</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">HEXALER BRONQUIAL DUO</span></span>
+            
+          </div>
+          <div class="drug">Mometasona 200 mcg / 400 mcg + Formoterol 10 mcg</div>
+          <div class="pres">60 cápsulas para inhalar</div>
+        </div></div>
+    </section><section class="cat-block" style="--accent:#7C5CC7; --bg:#F3EEFB;">
+      <div class="cat-header"><span class="cat-badge">Antihistamínico</span></div>
+      <div class="cards-grid"><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ALIDIAL</span></span>
+            
+          </div>
+          <div class="drug">Cetirizina 10 mg</div>
+          <div class="pres">10 y 30 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ALIDIAL Gotas</span></span>
+            
+          </div>
+          <div class="drug">Levocetirizina 5 mg/ml (20 gotas = 5 mg)</div>
+          <div class="pres">Envases de 20 ml.</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ALIDIAL L</span></span>
+            
+          </div>
+          <div class="drug">Levocetirizina 5 mg</div>
+          <div class="pres">10 y 30 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">HEXALER</span></span>
+            
+          </div>
+          <div class="drug">Desloratadina 5 mg</div>
+          <div class="pres">10 y 30 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">HEXALER CORT</span></span>
+            
+          </div>
+          <div class="drug">Desloratadina 5 mg + Betamesona 0,6 mg</div>
+          <div class="pres">10 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">HEXALER CORT JARABE</span></span>
+            
+          </div>
+          <div class="drug">Desloratadina 1 mg + Betamesona 0,5 mg</div>
+          <div class="pres">Envase 60 ml</div>
+        </div></div>
+    </section><section class="cat-block" style="--accent:#D9483F; --bg:#FDEBEA;">
+      <div class="cat-header"><span class="cat-badge">Antibiótico</span></div>
+      <div class="cards-grid"><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">BACTRIM FORTE</span></span>
+            
+          </div>
+          <div class="drug">Sulfametoxazol 800 mg + Trimetoprima 160 mg</div>
+          <div class="pres">10 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">CEFALEXINA ARGENTIA DUO</span></span>
+            
+          </div>
+          <div class="drug">Cefalexina 1 gr</div>
+          <div class="pres">14 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">MACROMAX</span></span>
+            
+          </div>
+          <div class="drug">Azitromicina 500 mg</div>
+          <div class="pres">3 y 6 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">MACROMAX PEDIATRICO</span></span>
+            
+          </div>
+          <div class="drug">Azitromicina 200 mg / 5 Mml</div>
+          <div class="pres">Envase 30 ml</div>
+        </div></div>
+    </section><section class="cat-block" style="--accent:#D98A2B; --bg:#FEF3E6;">
+      <div class="cat-header"><span class="cat-badge">Corticoide</span></div>
+      <div class="cards-grid"><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">DECADRON 4</span></span>
+            
+          </div>
+          <div class="drug">Dexametasona 4 mg</div>
+          <div class="pres">10 y 20 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">DECADRON 8</span></span>
+            
+          </div>
+          <div class="drug">Dexametasona 8 mg</div>
+          <div class="pres">10 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">DUO DECADRON</span></span>
+            
+          </div>
+          <div class="drug">Dexametasona 16 mg + Fosfato sódico 4 mg</div>
+          <div class="pres">1 ampolla 2 ml</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">HEALER NASAL</span></span>
+            
+          </div>
+          <div class="drug">Mometasona 50 mcg x dosis</div>
+          <div class="pres">Spray x 60 y 120 dosis</div>
+        </div></div>
+    </section><section class="cat-block" style="--accent:#C43D77; --bg:#FDEAF1;">
+      <div class="cat-header"><span class="cat-badge">Analgesico</span></div>
+      <div class="cards-grid"><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ENANTYUM</span></span>
+            
+          </div>
+          <div class="drug">Dexketoprofeno 25 mg</div>
+          <div class="pres">20 y 40 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ENANTYUM FORTE</span></span>
+            
+          </div>
+          <div class="drug">Tramadol 75 mg + Dexketoprofeno 25 mg</div>
+          <div class="pres">20  comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ENANTYUM GEL TÓPICO</span></span>
+            
+          </div>
+          <div class="drug">Dexketoprofeno 12,5 mg/g</div>
+          <div class="pres">60 gr</div>
+        </div></div>
+    </section><section class="cat-block" style="--accent:#6B9B37; --bg:#EFF6E9;">
+      <div class="cat-header"><span class="cat-badge">Ansiolítico</span></div>
+      <div class="cards-grid"><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">PGB 75 / 150</span></span>
+            <span class="pap-badge">incluido en bonos PAP</span>
+          </div>
+          <div class="drug">Pregabalina 75 mg / 150 mg</div>
+          <div class="pres">30 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">PGB 75 MULTIDOSIS</span></span>
+            <span class="pap-badge">incluido en bonos PAP</span>
+          </div>
+          <div class="drug">Pregabalina 75 mg</div>
+          <div class="pres">15 y 30 comprimidos</div>
+        </div></div>
+    </section><section class="cat-block" style="--accent:#5B4B9A; --bg:#F0EDFB;">
+      <div class="cat-header"><span class="cat-badge">Antipsicótico</span></div>
+      <div class="cards-grid"><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">QTP 25 / 100 / 200</span></span>
+            <span class="pap-badge">incluido en bonos PAP</span>
+          </div>
+          <div class="drug">Quetiapina 25 / 100 / 200 mg</div>
+          <div class="pres">30 comprimidos</div>
+        </div></div>
+    </section><section class="cat-block" style="--accent:#3E6FD9; --bg:#EAF2FE;">
+      <div class="cat-header"><span class="cat-badge">Anticonceptivo</span></div>
+      <div class="cards-grid"><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ISIS</span></span>
+            
+          </div>
+          <div class="drug">Dropirenona 3 mg + Etinilestradiol 0,03 mg</div>
+          <div class="pres">28 comp/ 56 comp /84 comp</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ISIS FREE</span></span>
+            
+          </div>
+          <div class="drug">Dropirenona 4 mg</div>
+          <div class="pres">28 comp / 56 comp / 84 comp</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ISIS MINI</span></span>
+            
+          </div>
+          <div class="drug">Drospirenona 3 mg + Etinilestradiol 0,02 mg</div>
+          <div class="pres">28 comp / 56 comp / 84 comp</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ISIS MINI 24</span></span>
+            
+          </div>
+          <div class="drug">Drospirenona 3 mg + Etinilestradiol 0,02 mg</div>
+          <div class="pres">28 comp / 56 comp / 84 comp</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">ISIS NAT</span></span>
+            
+          </div>
+          <div class="drug">Drospirenona 3 mg + Estetrol 14,2 mg</div>
+          <div class="pres">28 comp / 56 comp / 84 comp</div>
+        </div></div>
+    </section><section class="cat-block" style="--accent:#B23B3B; --bg:#FBEAEA;">
+      <div class="cat-header"><span class="cat-badge">Antianémico</span></div>
+      <div class="cards-grid"><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">SIDERBLUT</span></span>
+            
+          </div>
+          <div class="drug">Sulfato Ferroso Desecado 60 mg</div>
+          <div class="pres">30 y 60 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">SIDERBLUT COMPLEX</span></span>
+            
+          </div>
+          <div class="drug">Hierro poli. 100 mg / Acido Folico 0,50 mg / B12 0,20 mg</div>
+          <div class="pres">30 y 60 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">SIDERBLUT FOLIC</span></span>
+            
+          </div>
+          <div class="drug">Hierro poli. 100 mg / Acido Fólico 0,35 mg</div>
+          <div class="pres">30 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">SIDERBLUT GOTAS</span></span>
+            
+          </div>
+          <div class="drug">Hierro polimaltosato 50 mg / 1 ml</div>
+          <div class="pres">Envase x 20 ml</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">SIDERBLUT IM</span></span>
+            
+          </div>
+          <div class="drug">Hierro polimaltosato 100 mg</div>
+          <div class="pres">Envase x 5 ampollas</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">SIDERBLUT POLI</span></span>
+            
+          </div>
+          <div class="drug">Hierro polimaltosato 100 mg</div>
+          <div class="pres">30 y 60 comprimidos</div>
+        </div></div>
+    </section><section class="cat-block" style="--accent:#1F8A82; --bg:#E9F6F5;">
+      <div class="cat-header"><span class="cat-badge">Metabolico</span></div>
+      <div class="cards-grid"><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">CALCIO BASE DUPOMAR</span></span>
+            
+          </div>
+          <div class="drug">Calcio 1250 mg</div>
+          <div class="pres">30 y 60 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">CALCIO BASE DUPOMAR D3 200</span></span>
+            
+          </div>
+          <div class="drug">Calcio 1250 mg + Vitamina D3 200 UI</div>
+          <div class="pres">30 y 60 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">CALCIO BASE DUPOMAR D3 400</span></span>
+            
+          </div>
+          <div class="drug">Calcio 1250 mg + Vitamina D3 200 UI</div>
+          <div class="pres">30 y 60 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">CALCIO CITRATO DUPOMAR D3</span></span>
+            
+          </div>
+          <div class="drug">Calcio 1500 mg + Vitamina D3 200 UI</div>
+          <div class="pres">30 y 60 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">CALCIO CITRATO DUPOMAR D3 400</span></span>
+            
+          </div>
+          <div class="drug">Calcio 1500 mg + Vitamina D3 400 UI</div>
+          <div class="pres">30 y 60 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">DELTROX</span></span>
+            
+          </div>
+          <div class="drug">Acido Ibandronico 150 mg</div>
+          <div class="pres">1 comprimido</div>
+        </div></div>
+    </section><section class="cat-block" style="--accent:#C99A1A; --bg:#FEF7E3;">
+      <div class="cat-header"><span class="cat-badge">Vitamínico</span></div>
+      <div class="cards-grid"><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">TRIP +45</span></span>
+            
+          </div>
+          <div class="drug">Coenzima Q10 / C. de Magnesio / Ginseng / Resveratrol / Vit. B9 y E</div>
+          <div class="pres">30 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">TRIP D3</span></span>
+            
+          </div>
+          <div class="drug">Colecalciferol 100.000 UI</div>
+          <div class="pres">1 y 3 cápsulas</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">TRIP D3 PLUS</span></span>
+            
+          </div>
+          <div class="drug">Vitamina D3 20 mcg / Vitamina K2 100 mcg</div>
+          <div class="pres">30 comprimidos</div>
+        </div><div class="card">
+          <div class="card-top">
+            <span class="name-wrap"><span class="dot"></span><span class="name">TRIP MAGNESIO</span></span>
+            
+          </div>
+          <div class="drug">Citrato de Magnesio / Vitamina C</div>
+          <div class="pres">30 comprimidos</div>
+        </div></div>
+    </section>
+    </div>
+    <div class="footer">Referencia rápida de laboratorio · Presentación y drogas por producto</div>
+  </div>
+</body>
+</html>
