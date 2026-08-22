@@ -12,10 +12,19 @@ export default function handler(req, res) {
   const { q } = req.query;
 
   if (!q || q.trim().length < 2) {
-    return res.status(200).json({ total: 0, resultados: [] });
+    return res.status(200).json({
+      total: 0,
+      resultados: []
+    });
   }
 
   const query = normalizar(q);
+
+  // Detectar si la búsqueda corresponde exactamente
+  // a un laboratorio existente
+  const laboratorioBuscado = productos.some(p =>
+    normalizar(p.laboratorio || '') === query
+  );
 
   const encontrados = productos
     .map(p => ({
@@ -24,14 +33,48 @@ export default function handler(req, res) {
     }))
     .filter(p => p.score > 0)
     .sort((a, b) => {
-  if (b.score !== a.score) {
-    return b.score - a.score;
-  }
 
-  return a.nombre.localeCompare(b.nombre, 'es', {
-    sensitivity: 'base'
-  });
-});
+      const aLaboratorio = normalizar(a.laboratorio || '');
+      const bLaboratorio = normalizar(b.laboratorio || '');
+
+      const aSiegfried = aLaboratorio === 'siegfried';
+      const bSiegfried = bLaboratorio === 'siegfried';
+
+      /*
+       * Si NO se buscó un laboratorio específico:
+       * Siegfried aparece primero.
+       */
+      if (!laboratorioBuscado) {
+
+        if (aSiegfried !== bSiegfried) {
+          return aSiegfried ? -1 : 1;
+        }
+
+      } else {
+
+        /*
+         * Si se buscó un laboratorio específico,
+         * ese laboratorio aparece primero.
+         */
+        if (aLaboratorio === query && bLaboratorio !== query) {
+          return -1;
+        }
+
+        if (bLaboratorio === query && aLaboratorio !== query) {
+          return 1;
+        }
+      }
+
+      // Mantener la relevancia actual
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+
+      // Desempate alfabético
+      return a.nombre.localeCompare(b.nombre, 'es', {
+        sensitivity: 'base'
+      });
+    });
 
   const resultados = encontrados.map(p => ({
     nombre: p.nombre,
@@ -46,6 +89,7 @@ export default function handler(req, res) {
   });
 }
 
+
 function normalizar(texto) {
   return texto
     .toString()
@@ -55,12 +99,18 @@ function normalizar(texto) {
     .trim();
 }
 
+
 function empiezaPor(texto, query) {
   const palabras = normalizar(texto).split(/\s+/);
-  return palabras.some(palabra => palabra.startsWith(query));
+
+  return palabras.some(palabra =>
+    palabra.startsWith(query)
+  );
 }
 
+
 function puntaje(p, query) {
+
   const nombre = normalizar(p.nombre || '');
   const droga = normalizar(p.droga || '');
   const laboratorio = normalizar(p.laboratorio || '');
