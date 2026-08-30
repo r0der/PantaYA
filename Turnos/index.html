@@ -16,8 +16,8 @@
   --line:#e9eef2;
   --soft:#f3f6f8;
 
-  --morning:#e8891b;
-  --morning-bg:rgba(232,137,27,.13);
+  --morning:#b45309;
+  --morning-bg:rgba(180,83,9,.11);
   --afternoon:#1268a9;
   --afternoon-bg:rgba(18,104,169,.13);
   --doctor:#12202e;
@@ -39,12 +39,13 @@ h1{font-size:28px;letter-spacing:-.7px;margin:0 0 5px}
   padding:16px;box-shadow:0 12px 35px rgba(23,50,74,.07)
 }
 .top{display:grid;grid-template-columns:1fr 190px;gap:12px;margin-bottom:16px}
+.top>div{min-width:0}
 label{
   display:block;font-size:10px;font-weight:800;text-transform:uppercase;
   color:var(--muted);letter-spacing:.04em;margin:0 0 5px
 }
 input{
-  width:100%;height:42px;border:1px solid var(--line);border-radius:11px;
+  width:100%;min-width:0;height:42px;border:1px solid var(--line);border-radius:11px;
   padding:0 11px;font:inherit;font-size:14px;background:#fff;outline:none
 }
 input:focus{border-color:#76add2;box-shadow:0 0 0 3px rgba(18,104,169,.09)}
@@ -77,6 +78,7 @@ input:focus{border-color:#76add2;box-shadow:0 0 0 3px rgba(18,104,169,.09)}
 }
 .btn-clear-turn:hover{color:#a33;border-color:#f3c9c9;background:#fff5f5}
 .times{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+.times>div{min-width:0}
 
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
 button{
@@ -97,40 +99,39 @@ button{
 }
 .card-head{
   background:linear-gradient(155deg,#0b4f84,#1a7ac0);
-  color:#fff;padding:34px 38px 26px
+  color:#fff;padding:26px 38px 22px;position:relative
 }
-.brand{
-  display:flex;align-items:center;gap:7px;
-  font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;opacity:.8
+.title-hero{
+  font-size:29px;font-weight:900;letter-spacing:-.6px;line-height:1.1;
+  max-width:70%
 }
-.card-head h2{font-size:38px;line-height:1.05;letter-spacing:-1.1px;margin:9px 0 14px;font-weight:900}
-.date-row{
-  display:flex;align-items:center;gap:9px;font-size:16px;font-weight:600;
-  opacity:.95
+.date-sub{
+  font-size:16px;font-weight:700;letter-spacing:-.1px;line-height:1.2;
+  margin-top:8px;opacity:.92
 }
-.date-row .cal-icon{
-  width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.18);
-  display:grid;place-items:center;font-size:12px;flex:none
+.header-logos{
+  position:absolute;top:50%;right:38px;transform:translateY(-50%);
+  display:flex;align-items:center;gap:12px
 }
+.header-logos img{height:44px;width:auto;display:block}
 
-.rows{padding:6px 34px 10px}
+.rows{padding:4px 34px 10px}
 .row{
   display:grid;
-  grid-template-columns:52px 1fr 1px 1fr;
-  gap:20px;align-items:center;
+  grid-template-columns:82px 1fr 1px 1fr;
+  gap:16px;align-items:center;
   min-height:96px;padding:14px 0;
   border-bottom:1px solid var(--line)
 }
 .row:last-child{border-bottom:0}
 .row-divider{align-self:stretch;background:var(--line)}
 .number{
-  width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
-  background:#eaf4fb;color:var(--blue);font-size:16px;font-weight:900
+  font-size:50px;font-weight:900;color:var(--blue);letter-spacing:-1.5px
 }
 .shift{min-width:0}
 .badge{
   display:inline-flex;align-items:center;gap:6px;
-  font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;
+  font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;
   padding:4px 11px;border-radius:20px;margin-bottom:8px
 }
 .badge .dot{width:6px;height:6px;border-radius:50%;flex:none}
@@ -140,17 +141,17 @@ button{
 .badge.afternoon .dot{background:var(--afternoon)}
 
 .doctor{
-  font-size:19px;font-weight:900;line-height:23px;letter-spacing:-.2px;
+  font-size:20px;font-weight:900;line-height:24px;letter-spacing:-.2px;
   color:var(--doctor);text-transform:uppercase;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
 .doctor.empty{color:var(--doctor);opacity:.55}
-.time{font-size:14px;font-weight:800;margin-top:5px}
+.time{font-size:15px;font-weight:800;margin-top:5px}
 .time.morning{color:var(--morning)}
 .time.afternoon{color:var(--afternoon)}
 
 .footer{
-  margin:10px 34px 26px;padding:9px 14px;background:var(--soft);
+  margin:8px 34px 26px;padding:9px 14px;background:var(--soft);
   border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px;
   color:var(--muted);font-size:11px;font-weight:700
 }
@@ -163,38 +164,40 @@ button{
   font-family:"Inter",-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif
 }
 .export-head{
-  height:300px;background:linear-gradient(155deg,#0b4f84,#1a7ac0);
-  color:#fff;padding:70px 72px 36px
+  height:160px;background:linear-gradient(155deg,#0b4f84,#1a7ac0);
+  color:#fff;padding:0 72px;display:flex;flex-direction:column;justify-content:center;
+  position:relative
 }
-.export-brand{
-  display:flex;align-items:center;gap:12px;
-  font-size:23px;font-weight:900;letter-spacing:.17em;text-transform:uppercase;opacity:.8
+.export-title-hero{
+  font-size:50px;font-weight:900;letter-spacing:-1.1px;line-height:1.08;
+  max-width:62%
 }
-.export-head h2{font-size:58px;line-height:1.03;letter-spacing:-2px;margin:16px 0 20px;font-weight:900}
-.export-date-row{display:flex;align-items:center;gap:16px;font-size:27px;font-weight:600;opacity:.95}
-.export-date-row .cal-icon{
-  width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.18);
-  display:grid;place-items:center;font-size:20px;flex:none
+.export-date-sub{
+  font-size:26px;font-weight:700;letter-spacing:-.2px;line-height:1.2;margin-top:9px;opacity:.92
 }
+.export-header-logos{
+  position:absolute;top:50%;right:72px;transform:translateY(-50%);
+  display:flex;align-items:center;gap:24px
+}
+.export-header-logos img{height:96px;width:auto;display:block}
 
-.export-rows{padding:14px 62px 8px}
+.export-rows{padding:8px 62px 8px}
 .export-row{
-  height:158px;
+  height:167px;
   display:grid;
-  grid-template-columns:78px 1fr 2px 1fr;
-  gap:32px;align-items:center;
+  grid-template-columns:160px 1fr 2px 1fr;
+  gap:26px;align-items:center;
   border-bottom:2px solid var(--line)
 }
 .export-row:last-child{border-bottom:0}
 .export-number{
-  width:64px;height:64px;border-radius:50%;display:grid;place-items:center;
-  background:#eaf4fb;color:var(--blue);font-size:27px;font-weight:900
+  font-size:100px;font-weight:900;color:var(--blue);letter-spacing:-2px
 }
 .export-shift{min-width:0}
 .export-badge{
   display:inline-flex;align-items:center;gap:10px;
-  font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;
-  padding:6px 16px;border-radius:24px;margin-bottom:12px
+  font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;
+  padding:7px 18px;border-radius:24px;margin-bottom:13px
 }
 .export-badge .dot{width:9px;height:9px;border-radius:50%;flex:none}
 .export-badge.morning{background:var(--morning-bg);color:var(--morning)}
@@ -202,19 +205,20 @@ button{
 .export-badge.afternoon{background:var(--afternoon-bg);color:var(--afternoon)}
 .export-badge.afternoon .dot{background:var(--afternoon)}
 .export-doctor{
-  font-size:32px;line-height:37px;font-weight:900;letter-spacing:-.3px;
+  font-size:35px;line-height:40px;font-weight:900;letter-spacing:-.3px;
   color:var(--doctor);text-transform:uppercase;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
 .export-doctor.empty{opacity:.55}
-.export-time{font-size:22px;font-weight:800;margin-top:8px}
+.export-time{font-size:24px;font-weight:800;margin-top:9px}
 .export-time.morning{color:var(--morning)}
 .export-time.afternoon{color:var(--afternoon)}
 
 .export-footer{
-  margin:14px 62px 0;padding:16px 20px;background:var(--soft);border-radius:16px;
+  position:absolute;left:0;right:0;bottom:0;width:100%;
+  padding:18px 20px;background:var(--soft);border-radius:0;
   display:flex;align-items:center;justify-content:center;gap:10px;
-  color:var(--muted);font-size:19px;font-weight:700
+  color:var(--muted);font-size:18px;font-weight:700;text-align:center
 }
 
 /* A4 — todo el contenido (10 consultorios) tiene que entrar en una sola hoja,
@@ -225,18 +229,18 @@ button{
   .preview-wrap{padding:0;overflow:visible}
   .card{max-width:none;width:100%;box-shadow:none;border-radius:0}
 
-  .card-head{padding:10mm 16mm 7mm}
-  .brand{font-size:10px}
-  .card-head h2{font-size:27px;margin:4px 0 7px}
-  .date-row{font-size:12px;gap:7px}
-  .date-row .cal-icon{width:17px;height:17px;font-size:9px;border-radius:5px}
+  .card-head{padding:7mm 16mm 6mm}
+  .title-hero{font-size:19px;max-width:60%}
+  .date-sub{font-size:11px;margin-top:3px}
+  .header-logos{right:12mm;gap:4mm}
+  .header-logos img{height:9mm}
 
   .rows{padding:0 12mm}
   .row{
-    grid-template-columns:38px 1fr 1px 1fr;gap:13px;
+    grid-template-columns:56px 1fr 1px 1fr;gap:11px;
     min-height:0;padding:3.4mm 0
   }
-  .number{width:29px;height:29px;font-size:13px}
+  .number{font-size:30px}
   .badge{font-size:8.5px;padding:2.5px 8px;margin-bottom:4px;gap:4px}
   .badge .dot{width:5px;height:5px}
   .doctor{font-size:13.5px;line-height:16px}
@@ -253,16 +257,24 @@ button{
   .panel{padding:10px}
   .turns{grid-template-columns:1fr}
   .office-edit{padding:10px}
-  .card-head{padding:22px 18px 18px}
-  .card-head h2{font-size:26px}
-  .date-row{font-size:12px}
+  input{font-size:13px;padding:0 9px}
+  .times{gap:6px}
+  .card-head{padding:16px 18px 14px}
+  .title-hero{font-size:20px;max-width:60%}
+  .date-sub{font-size:12px;margin-top:4px}
+  .header-logos{right:16px;gap:6px}
+  .header-logos img{height:24px}
   .rows{padding:4px 14px 6px}
-  .row{grid-template-columns:32px 1fr 1px 1fr;gap:9px;min-height:74px;padding:9px 0}
-  .number{width:28px;height:28px;font-size:12px}
+  .row{grid-template-columns:50px 1fr 1px 1fr;gap:7px;min-height:74px;padding:9px 0}
+  .number{font-size:30px}
   .badge{font-size:8px;padding:3px 7px;margin-bottom:4px}
   .doctor{font-size:12px;line-height:15px}
   .time{font-size:9px;margin-top:2px}
   .footer{margin:8px 14px 16px;font-size:9px}
+}
+
+@media(max-width:360px){
+  .times{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -273,7 +285,7 @@ button{
 
   <div class="panel">
     <div class="top">
-      <div><label>Título</label><input id="titulo" value="Consultorios Médicos"></div>
+      <div><label>Título</label><input id="titulo" value="PUERREDÓN"></div>
       <div><label>Fecha</label><input id="fecha" type="date"></div>
     </div>
 
@@ -293,23 +305,29 @@ button{
   <div class="preview-wrap">
     <div class="card" id="card">
       <div class="card-head">
-        <div class="brand">Agenda diaria</div>
-        <h2 id="ptitulo">Consultorios Médicos</h2>
-        <div class="date-row"><span class="cal-icon">📅</span><span id="pfecha"></span></div>
+        <div class="title-hero" id="ptitulo"></div>
+        <div class="date-sub" id="pfecha"></div>
+        <div class="header-logos">
+          <img src="../Turnos/pueyrredon.png" alt="Clínica Pueyrredón">
+          <img src="../Turnos/siegfried.png" alt="Laboratorio Siegfried">
+        </div>
       </div>
       <div class="rows" id="previewRows"></div>
-      <div class="footer">ⓘ Agenda de atención generada digitalmente</div>
+      <div class="footer">Agenda de atención digital - cortesía laboratorios Siegfried</div>
     </div>
   </div>
 
   <div id="exportCard">
     <div class="export-head">
-      <div class="export-brand">Agenda diaria</div>
-      <h2 id="etitulo">Consultorios Médicos</h2>
-      <div class="export-date-row"><span class="cal-icon">📅</span><span id="efecha"></span></div>
+      <div class="export-title-hero" id="etitulo"></div>
+      <div class="export-date-sub" id="efecha"></div>
+      <div class="export-header-logos">
+        <img src="../Turnos/pueyrredon.png" alt="Clínica Pueyrredón">
+        <img src="../Turnos/siegfried.png" alt="Laboratorio Siegfried">
+      </div>
     </div>
     <div class="export-rows" id="exportRows"></div>
-    <div class="export-footer">ⓘ Agenda de atención generada digitalmente</div>
+    <div class="export-footer">Agenda de atención digital - cortesía laboratorios Siegfried</div>
   </div>
 </div>
 
@@ -428,7 +446,7 @@ function shiftHTML(doc,from,to,label,type,exportMode=false){
 function update(){
   save();
 
-  const title=titulo.value||'Consultorios Médicos';
+  const title=titulo.value||'PUERREDÓN';
   const d=fecha.value?new Date(fecha.value+'T12:00:00'):null;
   const dateText=formatFecha(d);
 
@@ -491,6 +509,11 @@ async function makeBlob(){
     try{ await document.fonts.ready; }catch(e){}
   }
   const node=document.getElementById('exportCard');
+  const imgs=[...node.querySelectorAll('img')];
+  await Promise.all(imgs.map(img=>{
+    if(img.complete) return Promise.resolve();
+    return new Promise(res=>{ img.onload=res; img.onerror=res; });
+  }));
   const canvas=await html2canvas(node,{
     scale:1,
     backgroundColor:'#fff',
