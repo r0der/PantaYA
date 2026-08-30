@@ -45,9 +45,23 @@ label{
   color:var(--muted);letter-spacing:.04em;margin:0 0 5px
 }
 input{
-  width:100%;min-width:0;height:42px;border:1px solid var(--line);border-radius:11px;
-  padding:0 11px;font:inherit;font-size:14px;background:#fff;outline:none
+  width:100%;min-width:0;max-width:100%;height:42px;box-sizing:border-box;
+  border:1px solid var(--line);border-radius:11px;padding:0 11px;
+  font:inherit;font-size:14px;background:#fff;outline:none;display:block
 }
+input[type="date"],input[type="time"]{
+  min-width:0;width:100%;max-width:100%;box-sizing:border-box
+}
+.time-select{
+  width:100%;min-width:0;max-width:100%;height:42px;box-sizing:border-box;
+  border:1px solid var(--line);border-radius:11px;padding:0 8px;
+  background:#fff;color:var(--ink);font:inherit;font-size:14px;
+  outline:none;display:block
+}
+.time-select:focus{
+  border-color:#76add2;box-shadow:0 0 0 3px rgba(18,104,169,.09)
+}
+#fecha{min-width:0;width:100%;max-width:100%;box-sizing:border-box}
 input:focus{border-color:#76add2;box-shadow:0 0 0 3px rgba(18,104,169,.09)}
 
 .editor{display:grid;gap:10px}
@@ -77,8 +91,11 @@ input:focus{border-color:#76add2;box-shadow:0 0 0 3px rgba(18,104,169,.09)}
   white-space:nowrap
 }
 .btn-clear-turn:hover{color:#a33;border-color:#f3c9c9;background:#fff5f5}
-.times{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
-.times>div{min-width:0}
+.times{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:7px;margin-top:7px;width:100%
+}
+.times>div{min-width:0;width:100%;overflow:hidden}
 
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
 button{
@@ -99,21 +116,26 @@ button{
 }
 .card-head{
   background:linear-gradient(155deg,#0b4f84,#1a7ac0);
-  color:#fff;padding:26px 38px 22px;position:relative
+  color:#fff;height:118px;padding:18px 38px;position:relative;
+  display:flex;align-items:center;justify-content:space-between
 }
-.title-hero{
-  font-size:29px;font-weight:900;letter-spacing:-.6px;line-height:1.1;
-  max-width:70%
+.header-pueyrredon{
+  display:flex;align-items:center
+}
+.header-pueyrredon img{
+  height:48px;width:auto;display:block
+}
+.header-siegfried{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:7px
+}
+.header-siegfried img{
+  height:42px;width:auto;display:block
 }
 .date-sub{
-  font-size:16px;font-weight:700;letter-spacing:-.1px;line-height:1.2;
-  margin-top:8px;opacity:.92
+  font-size:14px;font-weight:800;letter-spacing:-.1px;line-height:1.2;
+  margin:0;opacity:.96;text-align:center;white-space:nowrap
 }
-.header-logos{
-  position:absolute;top:50%;right:38px;transform:translateY(-50%);
-  display:flex;align-items:center;gap:12px
-}
-.header-logos img{height:44px;width:auto;display:block}
 
 .rows{padding:4px 34px 10px}
 .row{
@@ -156,71 +178,6 @@ button{
   color:var(--muted);font-size:11px;font-weight:700
 }
 
-/* ===================== EXPORT: 1080x1920 ===================== */
-#exportCard{
-  position:absolute;left:-100000px;top:0;
-  width:1080px;height:1920px;background:#fff;overflow:hidden;
-  color:var(--ink);
-  font-family:"Inter",-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif
-}
-.export-head{
-  height:160px;background:linear-gradient(155deg,#0b4f84,#1a7ac0);
-  color:#fff;padding:0 72px;display:flex;flex-direction:column;justify-content:center;
-  position:relative
-}
-.export-title-hero{
-  font-size:50px;font-weight:900;letter-spacing:-1.1px;line-height:1.08;
-  max-width:62%
-}
-.export-date-sub{
-  font-size:26px;font-weight:700;letter-spacing:-.2px;line-height:1.2;margin-top:9px;opacity:.92
-}
-.export-header-logos{
-  position:absolute;top:50%;right:72px;transform:translateY(-50%);
-  display:flex;align-items:center;gap:24px
-}
-.export-header-logos img{height:96px;width:auto;display:block}
-
-.export-rows{padding:8px 62px 8px}
-.export-row{
-  height:167px;
-  display:grid;
-  grid-template-columns:160px 1fr 2px 1fr;
-  gap:26px;align-items:center;
-  border-bottom:2px solid var(--line)
-}
-.export-row:last-child{border-bottom:0}
-.export-number{
-  font-size:100px;font-weight:900;color:var(--blue);letter-spacing:-2px
-}
-.export-shift{min-width:0}
-.export-badge{
-  display:inline-flex;align-items:center;gap:10px;
-  font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;
-  padding:7px 18px;border-radius:24px;margin-bottom:13px
-}
-.export-badge .dot{width:9px;height:9px;border-radius:50%;flex:none}
-.export-badge.morning{background:var(--morning-bg);color:var(--morning)}
-.export-badge.morning .dot{background:var(--morning)}
-.export-badge.afternoon{background:var(--afternoon-bg);color:var(--afternoon)}
-.export-badge.afternoon .dot{background:var(--afternoon)}
-.export-doctor{
-  font-size:35px;line-height:40px;font-weight:900;letter-spacing:-.3px;
-  color:var(--doctor);text-transform:uppercase;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
-}
-.export-doctor.empty{opacity:.55}
-.export-time{font-size:24px;font-weight:800;margin-top:9px}
-.export-time.morning{color:var(--morning)}
-.export-time.afternoon{color:var(--afternoon)}
-
-.export-footer{
-  position:absolute;left:0;right:0;bottom:0;width:100%;
-  padding:18px 20px;background:var(--soft);border-radius:0;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  color:var(--muted);font-size:18px;font-weight:700;text-align:center
-}
-
 /* A4 — todo el contenido (10 consultorios) tiene que entrar en una sola hoja,
    aprovechando el alto disponible sin desbordar */
 @media print{
@@ -229,11 +186,11 @@ button{
   .preview-wrap{padding:0;overflow:visible}
   .card{max-width:none;width:100%;box-shadow:none;border-radius:0}
 
-  .card-head{padding:7mm 16mm 6mm}
-  .title-hero{font-size:19px;max-width:60%}
-  .date-sub{font-size:11px;margin-top:3px}
-  .header-logos{right:12mm;gap:4mm}
-  .header-logos img{height:9mm}
+  .card-head{height:auto;padding:7mm 16mm 6mm}
+  .header-pueyrredon img{height:9mm}
+  .header-siegfried{gap:2mm}
+  .header-siegfried img{height:9mm}
+  .date-sub{font-size:8.5px}
 
   .rows{padding:0 12mm}
   .row{
@@ -253,17 +210,19 @@ button{
 
 @media(max-width:700px){
   .app{padding:10px}
-  .top{grid-template-columns:1fr}
+  .top{grid-template-columns:minmax(0,1fr);width:100%}
   .panel{padding:10px}
   .turns{grid-template-columns:1fr}
   .office-edit{padding:10px}
-  input{font-size:13px;padding:0 9px}
-  .times{gap:6px}
-  .card-head{padding:16px 18px 14px}
-  .title-hero{font-size:20px;max-width:60%}
-  .date-sub{font-size:12px;margin-top:4px}
-  .header-logos{right:16px;gap:6px}
-  .header-logos img{height:24px}
+  input{font-size:13px;padding:0 7px}
+  input[type="date"]{font-size:12px;padding-left:6px;padding-right:6px}
+  .time-select{height:38px;font-size:12px;padding:0 5px}
+  .times{gap:6px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .card-head{height:98px;padding:14px 18px}
+  .header-pueyrredon img{height:38px}
+  .header-siegfried{gap:5px}
+  .header-siegfried img{height:34px}
+  .date-sub{font-size:11px}
   .rows{padding:4px 14px 6px}
   .row{grid-template-columns:50px 1fr 1px 1fr;gap:7px;min-height:74px;padding:9px 0}
   .number{font-size:30px}
@@ -285,7 +244,6 @@ button{
 
   <div class="panel">
     <div class="top">
-      <div><label>Título</label><input id="titulo" value="PUERREDÓN"></div>
       <div><label>Fecha</label><input id="fecha" type="date"></div>
     </div>
 
@@ -298,45 +256,32 @@ button{
       <button class="secondary" onclick="window.print()">🖨️ Imprimir A4</button>
       <button class="danger" id="btnClear">Limpiar</button>
     </div>
-    <div class="hint">La imagen se genera vertical, 1080 × 1920 px, con los 10 consultorios y ambos turnos.</div>
+    <div class="hint">La imagen exportada conserva exactamente el diseño de la vista previa, en alta resolución.</div>
   </div>
 
   <div class="preview-title">Vista previa</div>
   <div class="preview-wrap">
     <div class="card" id="card">
       <div class="card-head">
-        <div class="title-hero" id="ptitulo"></div>
-        <div class="date-sub" id="pfecha"></div>
-        <div class="header-logos">
+        <div class="header-pueyrredon">
           <img src="../Turnos/pueyrredon.png" alt="Clínica Pueyrredón">
+        </div>
+        <div class="header-siegfried">
           <img src="../Turnos/siegfried.png" alt="Laboratorio Siegfried">
+          <div class="date-sub" id="pfecha"></div>
         </div>
       </div>
       <div class="rows" id="previewRows"></div>
       <div class="footer">Agenda de atención digital - cortesía laboratorios Siegfried</div>
     </div>
   </div>
-
-  <div id="exportCard">
-    <div class="export-head">
-      <div class="export-title-hero" id="etitulo"></div>
-      <div class="export-date-sub" id="efecha"></div>
-      <div class="export-header-logos">
-        <img src="../Turnos/pueyrredon.png" alt="Clínica Pueyrredón">
-        <img src="../Turnos/siegfried.png" alt="Laboratorio Siegfried">
-      </div>
-    </div>
-    <div class="export-rows" id="exportRows"></div>
-    <div class="export-footer">Agenda de atención digital - cortesía laboratorios Siegfried</div>
   </div>
-</div>
 
 <script>
 const OLD_KEY='agenda_consultorios_v4';
-const KEY='agenda_consultorios_v5';
+const KEY='agenda_consultorios_v6';
 
 const editor=document.getElementById('editor');
-const titulo=document.getElementById('titulo');
 const fecha=document.getElementById('fecha');
 
 const DIAS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
@@ -364,6 +309,23 @@ function esc(s){
     .replaceAll('<','&lt;').replaceAll('>','&gt;');
 }
 
+function buildTimeOptions(select,start,end,selected=''){
+  const [sh,sm]=start.split(':').map(Number);
+  const [eh,em]=end.split(':').map(Number);
+  const startMin=sh*60+sm;
+  const endMin=eh*60+em;
+  let options='<option value="">Seleccionar</option>';
+
+  for(let m=startMin;m<=endMin;m+=15){
+    const hh=String(Math.floor(m/60)).padStart(2,'0');
+    const mm=String(m%60).padStart(2,'0');
+    const value=`${hh}:${mm}`;
+    options+=`<option value="${value}">${value}</option>`;
+  }
+  select.innerHTML=options;
+  if(selected && [...select.options].some(o=>o.value===selected)) select.value=selected;
+}
+
 function createOffice(n,data={}){
   const box=document.createElement('div');
   box.className='office-edit';
@@ -380,8 +342,8 @@ function createOffice(n,data={}){
         </div>
         <input data-key="mananaMedico" placeholder="Nombre del médico" value="${esc(data.mananaMedico)}">
         <div class="times">
-          <div><label>Desde</label><input type="time" data-key="mananaDesde" value="${esc(data.mananaDesde)}"></div>
-          <div><label>Hasta</label><input type="time" data-key="mananaHasta" value="${esc(data.mananaHasta)}"></div>
+          <div><label>Desde</label><select data-key="mananaDesde" class="time-select" data-start="08:00" data-end="20:00"></select></div>
+          <div><label>Hasta</label><select data-key="mananaHasta" class="time-select" data-start="08:00" data-end="20:00"></select></div>
         </div>
       </div>
       <div class="turn afternoon">
@@ -391,12 +353,15 @@ function createOffice(n,data={}){
         </div>
         <input data-key="tardeMedico" placeholder="Nombre del médico" value="${esc(data.tardeMedico)}">
         <div class="times">
-          <div><label>Desde</label><input type="time" data-key="tardeDesde" value="${esc(data.tardeDesde)}"></div>
-          <div><label>Hasta</label><input type="time" data-key="tardeHasta" value="${esc(data.tardeHasta)}"></div>
+          <div><label>Desde</label><select data-key="tardeDesde" class="time-select" data-start="08:00" data-end="20:00"></select></div>
+          <div><label>Hasta</label><select data-key="tardeHasta" class="time-select" data-start="08:00" data-end="20:00"></select></div>
         </div>
       </div>
     </div>`;
-  box.querySelectorAll('input').forEach(i=>i.addEventListener('input',update));
+  box.querySelectorAll('input,select').forEach(i=>i.addEventListener('input',update));
+  box.querySelectorAll('.time-select').forEach(select=>{
+    buildTimeOptions(select,select.dataset.start,select.dataset.end,data[select.dataset.key]||'');
+  });
   box.querySelectorAll('[data-clear]').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const prefix=btn.dataset.clear; // 'manana' | 'tarde'
@@ -412,14 +377,14 @@ for(let i=1;i<=10;i++) createOffice(i);
 function getData(){
   return [...editor.children].map((box,i)=>{
     const o={n:i+1};
-    box.querySelectorAll('input').forEach(input=>o[input.dataset.key]=input.value.trim());
+    box.querySelectorAll('input,select').forEach(input=>o[input.dataset.key]=input.value.trim());
     return o;
   });
 }
 
 function save(){
   localStorage.setItem(KEY,JSON.stringify({
-    titulo:titulo.value,fecha:fecha.value,rows:getData()
+    fecha:fecha.value,rows:getData()
   }));
 }
 
@@ -446,18 +411,13 @@ function shiftHTML(doc,from,to,label,type,exportMode=false){
 function update(){
   save();
 
-  const title=titulo.value||'PUERREDÓN';
   const d=fecha.value?new Date(fecha.value+'T12:00:00'):null;
   const dateText=formatFecha(d);
 
-  document.getElementById('ptitulo').textContent=title;
   document.getElementById('pfecha').textContent=dateText;
-  document.getElementById('etitulo').textContent=title;
-  document.getElementById('efecha').textContent=dateText;
 
   const data=getData();
   const divider='<div class="row-divider"></div>';
-  const exportDivider='<div class="row-divider"></div>';
 
   document.getElementById('previewRows').innerHTML=data.map(r=>`
     <div class="row">
@@ -466,21 +426,12 @@ function update(){
       ${divider}
       ${shiftHTML(r.tardeMedico,r.tardeDesde,r.tardeHasta,'Tarde','afternoon')}
     </div>`).join('');
-
-  document.getElementById('exportRows').innerHTML=data.map(r=>`
-    <div class="export-row">
-      <div class="export-number">${r.n}</div>
-      ${shiftHTML(r.mananaMedico,r.mananaDesde,r.mananaHasta,'Mañana','morning',true)}
-      ${exportDivider}
-      ${shiftHTML(r.tardeMedico,r.tardeDesde,r.tardeHasta,'Tarde','afternoon',true)}
-    </div>`).join('');
 }
 
 function load(){
   try{
     let saved=JSON.parse(localStorage.getItem(KEY)||'null');
 
-    // Migración del prototipo anterior para no perder lo que ya estaba cargado.
     if(!saved){
       const old=readOldData();
       if(old){
@@ -490,12 +441,23 @@ function load(){
     }
 
     if(saved){
-      titulo.value=saved.titulo||titulo.value;
       fecha.value=saved.fecha||fecha.value;
+
       (saved.rows||[]).forEach((r,i)=>{
         if(i<editor.children.length){
-          editor.children[i].querySelectorAll('input').forEach(input=>{
-            input.value=r[input.dataset.key]||'';
+          const box=editor.children[i];
+
+          box.querySelectorAll('input,select').forEach(input=>{
+            if(input.classList.contains('time-select')){
+              buildTimeOptions(
+                input,
+                input.dataset.start,
+                input.dataset.end,
+                r[input.dataset.key]||''
+              );
+            }else{
+              input.value=r[input.dataset.key]||'';
+            }
           });
         }
       });
@@ -508,20 +470,37 @@ async function makeBlob(){
   if(document.fonts && document.fonts.ready){
     try{ await document.fonts.ready; }catch(e){}
   }
-  const node=document.getElementById('exportCard');
+
+  // IMPORTANTE: se exporta el mismo #card que el usuario ve en Vista previa.
+  // Ya no existe un diseño paralelo para exportación.
+  const node=document.getElementById('card');
   const imgs=[...node.querySelectorAll('img')];
+
   await Promise.all(imgs.map(img=>{
-    if(img.complete) return Promise.resolve();
-    return new Promise(res=>{ img.onload=res; img.onerror=res; });
+    if(img.complete && img.naturalWidth) return Promise.resolve();
+    return new Promise(res=>{
+      img.onload=res;
+      img.onerror=res;
+    });
   }));
+
+  const rect=node.getBoundingClientRect();
+
+  // Alta resolución sin cambiar proporciones ni tipografías.
+  // En escritorio genera al menos 2x; en pantallas chicas sube la escala
+  // hasta conseguir como mínimo ~1080 px de ancho.
+  const scale=Math.min(4,Math.max(2,1080/rect.width));
+
   const canvas=await html2canvas(node,{
-    scale:1,
+    scale:scale,
     backgroundColor:'#fff',
-    width:1080,
-    height:1920,
-    useCORS:true
+    useCORS:true,
+    allowTaint:false,
+    imageTimeout:15000,
+    logging:false
   });
-  return await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.95));
+
+  return await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.98));
 }
 
 async function exportJPG(){
@@ -550,7 +529,33 @@ async function share(){
   alert('La imagen fue descargada. Podés adjuntarla desde WhatsApp.');
 }
 
-function mail(){
+async function mail(){
+  const blob=await makeBlob();
+  const file=new File([blob],'agenda_'+(fecha.value||'fecha')+'.jpg',{type:'image/jpeg'});
+
+  // En navegadores compatibles, el menú del sistema permite elegir Mail,
+  // WhatsApp u otra aplicación y entrega el JPEG como archivo adjunto.
+  if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+    try{
+      await navigator.share({
+        title:'Agenda de consultorios',
+        text:'Agenda diaria',
+        files:[file]
+      });
+      return;
+    }catch(e){
+      if(e.name==='AbortError') return;
+    }
+  }
+
+  // mailto no puede adjuntar archivos por sí solo: descargamos el JPEG
+  // y abrimos el correo para que pueda adjuntarse manualmente.
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=file.name;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+
   location.href='mailto:?subject='+encodeURIComponent(
     'Agenda de consultorios - '+fecha.value
   )+'&body='+encodeURIComponent(
@@ -560,11 +565,10 @@ function mail(){
 
 function clearAll(){
   if(!confirm('¿Borrar todos los médicos y horarios?')) return;
-  editor.querySelectorAll('input').forEach(i=>i.value='');
+  editor.querySelectorAll('input,select').forEach(i=>i.value='');
   update();
 }
 
-titulo.addEventListener('input',update);
 fecha.addEventListener('input',update);
 document.getElementById('btnJpg').addEventListener('click',exportJPG);
 document.getElementById('btnShare').addEventListener('click',share);
