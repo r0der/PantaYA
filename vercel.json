@@ -49,7 +49,7 @@
           "value": "pueyrredon.vizta.lat"
         }
       ],
-      "destination": "/TURNOS/index.html"
+      "destination": "/Turnos/index.html"
     },
     {
       "source": "/:path*",
@@ -59,7 +59,7 @@
           "value": "pueyrredon.vizta.lat"
         }
       ],
-      "destination": "/TURNOS/:path*"
+      "destination": "/Turnos/:path*"
     }
   ]
 }
