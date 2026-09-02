@@ -40,6 +40,26 @@
         }
       ],
       "destination": "/vademecum/:path*"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "pueyrredon.vizta.lat"
+        }
+      ],
+      "destination": "/TURNOS/index.html"
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "pueyrredon.vizta.lat"
+        }
+      ],
+      "destination": "/TURNOS/:path*"
     }
   ]
 }
