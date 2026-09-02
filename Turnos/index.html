@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Agenda de Consultorios</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,14 +23,16 @@
   --doctor:#12202e;
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
+html,body{margin:0;padding:0;width:100%;overflow-x:hidden}
 body{
   background:#f5f7f9;
   color:var(--ink);
   font-family:"Inter",-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
   -webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
 }
-.app{max-width:1050px;margin:auto;padding:18px}
+.app{max-width:1050px;margin:auto;padding:18px;width:100%}
 h1{font-size:28px;letter-spacing:-.7px;margin:0 0 5px}
 .subtitle{margin:0 0 18px;color:var(--muted);font-size:14px}
 
@@ -38,25 +40,29 @@ h1{font-size:28px;letter-spacing:-.7px;margin:0 0 5px}
   background:#fff;border:1px solid var(--line);border-radius:20px;
   padding:16px;box-shadow:0 12px 35px rgba(23,50,74,.07)
 }
-.top{display:grid;grid-template-columns:1fr 190px;gap:12px;margin-bottom:16px}
-.top>div{min-width:0}
+.top{display:grid;grid-template-columns:1fr 190px;gap:12px;margin-bottom:16px;width:100%}
+.top>div{min-width:0;width:100%;overflow:hidden}
+
 label{
   display:block;font-size:10px;font-weight:800;text-transform:uppercase;
   color:var(--muted);letter-spacing:.04em;margin:0 0 5px
 }
 input{
-  width:100%;min-width:0;max-width:100%;height:42px;box-sizing:border-box;
+  width:100%;min-width:0;max-width:100%;height:44px;box-sizing:border-box;
   border:1px solid var(--line);border-radius:11px;padding:0 11px;
-  font:inherit;font-size:14px;background:#fff;outline:none;display:block
+  font:inherit;font-size:16px;background:#fff;outline:none;display:block;
+  -webkit-appearance:none;appearance:none
 }
 input[type="date"],input[type="time"]{
-  min-width:0;width:100%;max-width:100%;box-sizing:border-box
+  min-width:0;width:100%;max-width:100%;box-sizing:border-box;
+  -webkit-appearance:none;appearance:none;
+  -webkit-min-logical-width:0
 }
 .time-select{
-  width:100%;min-width:0;max-width:100%;height:42px;box-sizing:border-box;
+  width:100%;min-width:0;max-width:100%;height:44px;box-sizing:border-box;
   border:1px solid var(--line);border-radius:11px;padding:0 8px;
-  background:#fff;color:var(--ink);font:inherit;font-size:14px;
-  outline:none;display:block
+  background:#fff;color:var(--ink);font:inherit;font-size:16px;
+  outline:none;display:block;-webkit-appearance:none;appearance:none
 }
 .time-select:focus{
   border-color:#76add2;box-shadow:0 0 0 3px rgba(18,104,169,.09)
@@ -91,11 +97,27 @@ input:focus{border-color:#76add2;box-shadow:0 0 0 3px rgba(18,104,169,.09)}
   white-space:nowrap
 }
 .btn-clear-turn:hover{color:#a33;border-color:#f3c9c9;background:#fff5f5}
+
+.slots{display:grid;gap:8px}
+.slot{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px}
+.slot-top{display:flex;gap:6px;align-items:center}
+.slot-top input{flex:1;min-width:0}
+.btn-remove-slot{
+  flex:none;width:38px;height:38px;border-radius:9px;border:1px solid var(--line);
+  background:#fff;color:#a33;font-weight:900;font-size:14px;cursor:pointer
+}
+.btn-remove-slot:hover{background:#fff5f5;border-color:#f3c9c9}
 .times{
   display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
   gap:7px;margin-top:7px;width:100%
 }
 .times>div{min-width:0;width:100%;overflow:hidden}
+.btn-add-slot{
+  width:100%;margin-top:8px;border:1.5px dashed #c6d6e0;background:#fff;
+  color:var(--blue-dark);font-size:12px;font-weight:800;padding:9px;
+  border-radius:10px;cursor:pointer
+}
+.btn-add-slot:hover{background:#eaf2f8}
 
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
 button{
@@ -111,26 +133,26 @@ button{
 .preview-title{margin:25px 0 9px;font-weight:900;font-size:15px}
 .preview-wrap{overflow:auto;padding:2px}
 .card{
-  width:100%;max-width:900px;margin:auto;background:#fff;border-radius:26px;
+  width:100%;max-width:900px;margin:auto;background:#fff;border-radius:0;
   overflow:hidden;box-shadow:0 16px 45px rgba(23,50,74,.12)
 }
 .card-head{
   background:linear-gradient(155deg,#0b4f84,#1a7ac0);
-  color:#fff;height:118px;padding:18px 38px;position:relative;
+  color:#fff;height:130px;padding:18px 38px;position:relative;
   display:flex;align-items:center;justify-content:space-between
 }
 .header-pueyrredon{
   display:flex;align-items:center
 }
 .header-pueyrredon img{
-  height:48px;width:auto;display:block
+  height:58px;width:auto;display:block
 }
 .header-siegfried{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:7px
 }
 .header-siegfried img{
-  height:42px;width:auto;display:block
+  height:50px;width:auto;display:block
 }
 .date-sub{
   font-size:14px;font-weight:800;letter-spacing:-.1px;line-height:1.2;
@@ -140,26 +162,30 @@ button{
 .rows{padding:4px 34px 10px}
 .row{
   display:grid;
-  grid-template-columns:82px 1fr 1px 1fr;
-  gap:16px;align-items:center;
+  grid-template-columns:82px repeat(var(--shifts,2),1fr);
+  --row-gap:16px;column-gap:var(--row-gap);
+  align-items:center;
   min-height:96px;padding:14px 0;
   border-bottom:1px solid var(--line)
 }
 .row:last-child{border-bottom:0}
-.row-divider{align-self:stretch;background:var(--line)}
 .number{
   font-size:50px;font-weight:900;color:var(--blue);letter-spacing:-1.5px
 }
-.shift{min-width:0}
+/* Cada turno (mañana/tarde) tiene su propio fondo suave para distinguirse
+   de un vistazo cuando hay varios médicos alternados en un consultorio */
+.shift{min-width:0;border-radius:12px;padding:10px 12px}
+.shift.morning{background:var(--morning-bg)}
+.shift.afternoon{background:var(--afternoon-bg)}
 .badge{
   display:inline-flex;align-items:center;gap:6px;
   font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;
-  padding:4px 11px;border-radius:20px;margin-bottom:8px
+  padding:4px 11px;border-radius:20px;margin-bottom:8px;background:rgba(255,255,255,.65)
 }
 .badge .dot{width:6px;height:6px;border-radius:50%;flex:none}
-.badge.morning{background:var(--morning-bg);color:var(--morning)}
+.badge.morning{color:var(--morning)}
 .badge.morning .dot{background:var(--morning)}
-.badge.afternoon{background:var(--afternoon-bg);color:var(--afternoon)}
+.badge.afternoon{color:var(--afternoon)}
 .badge.afternoon .dot{background:var(--afternoon)}
 
 .doctor{
@@ -168,9 +194,17 @@ button{
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
 .doctor.empty{color:var(--doctor);opacity:.55}
-.time{font-size:15px;font-weight:800;margin-top:5px}
+.time{font-size:19px;font-weight:800;margin-top:6px}
 .time.morning{color:var(--morning)}
 .time.afternoon{color:var(--afternoon)}
+
+/* Cuando un consultorio tiene 3 o más médicos en el día, se achica un poco
+   el contenido de esa fila puntual para que todo siga entrando prolijo.
+   El número de consultorio NUNCA cambia de tamaño. */
+.row:has(.shift:nth-child(4)) .badge{font-size:10.5px;padding:3px 9px;margin-bottom:6px}
+.row:has(.shift:nth-child(4)) .doctor{font-size:16px;line-height:19px}
+.row:has(.shift:nth-child(4)) .time{font-size:15px;margin-top:4px}
+.row:has(.shift:nth-child(4)) .shift{padding:8px 10px}
 
 .footer{
   margin:8px 34px 26px;padding:9px 14px;background:var(--soft);
@@ -178,30 +212,31 @@ button{
   color:var(--muted);font-size:11px;font-weight:700
 }
 
-/* A4 — todo el contenido (10 consultorios) tiene que entrar en una sola hoja,
-   aprovechando el alto disponible sin desbordar */
+/* A4 — todo el contenido tiene que entrar en una sola hoja */
 @media print{
   body{background:#fff}
   .app>h1,.app>.subtitle,.app>.panel,.preview-title{display:none!important}
   .preview-wrap{padding:0;overflow:visible}
   .card{max-width:none;width:100%;box-shadow:none;border-radius:0}
 
-  .card-head{height:auto;padding:7mm 16mm 6mm}
-  .header-pueyrredon img{height:9mm}
+  .card-head{height:auto;padding:8mm 16mm 7mm}
+  .header-pueyrredon img{height:11mm}
   .header-siegfried{gap:2mm}
-  .header-siegfried img{height:9mm}
+  .header-siegfried img{height:11mm}
   .date-sub{font-size:8.5px}
 
   .rows{padding:0 12mm}
   .row{
-    grid-template-columns:56px 1fr 1px 1fr;gap:11px;
+    grid-template-columns:56px repeat(var(--shifts,2),1fr);
+    --row-gap:11px;column-gap:var(--row-gap);
     min-height:0;padding:3.4mm 0
   }
   .number{font-size:30px}
+  .shift{padding:2mm 2.5mm;border-radius:2mm}
   .badge{font-size:8.5px;padding:2.5px 8px;margin-bottom:4px;gap:4px}
   .badge .dot{width:5px;height:5px}
   .doctor{font-size:13.5px;line-height:16px}
-  .time{font-size:10px;margin-top:2.5px}
+  .time{font-size:12px;margin-top:2.5px}
 
   .footer{margin:4mm 14mm 0;padding:4px 14px;font-size:8.5px}
 
@@ -214,22 +249,28 @@ button{
   .panel{padding:10px}
   .turns{grid-template-columns:1fr}
   .office-edit{padding:10px}
-  input{font-size:13px;padding:0 7px}
-  input[type="date"]{font-size:12px;padding-left:6px;padding-right:6px}
-  .time-select{height:38px;font-size:12px;padding:0 5px}
+  input{font-size:16px;padding:0 9px;height:42px}
+  input[type="date"]{font-size:16px;padding-left:9px;padding-right:9px}
+  .time-select{height:42px;font-size:16px;padding:0 7px}
   .times{gap:6px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  .card-head{height:98px;padding:14px 18px}
-  .header-pueyrredon img{height:38px}
+
+  .card-head{height:108px;padding:14px 18px}
+  .header-pueyrredon img{height:44px}
   .header-siegfried{gap:5px}
-  .header-siegfried img{height:34px}
+  .header-siegfried img{height:40px}
   .date-sub{font-size:11px}
-  .rows{padding:4px 14px 6px}
-  .row{grid-template-columns:50px 1fr 1px 1fr;gap:7px;min-height:74px;padding:9px 0}
-  .number{font-size:30px}
-  .badge{font-size:8px;padding:3px 7px;margin-bottom:4px}
-  .doctor{font-size:12px;line-height:15px}
-  .time{font-size:9px;margin-top:2px}
-  .footer{margin:8px 14px 16px;font-size:9px}
+  .rows{padding:4px 16px 8px}
+  .row{
+    grid-template-columns:52px repeat(var(--shifts,2),1fr);
+    --row-gap:10px;column-gap:var(--row-gap);
+    min-height:82px;padding:11px 0
+  }
+  .shift{padding:8px 9px}
+  .number{font-size:34px}
+  .badge{font-size:10px;padding:4px 9px;margin-bottom:6px}
+  .doctor{font-size:15px;line-height:18px}
+  .time{font-size:14.5px;margin-top:4px}
+  .footer{margin:8px 16px 16px;font-size:9.5px}
 }
 
 @media(max-width:360px){
@@ -272,7 +313,7 @@ button{
         </div>
       </div>
       <div class="rows" id="previewRows"></div>
-      <div class="footer">Agenda de atención digital - cortesía laboratorios Siegfried</div>
+      <div class="footer">Agenda de atención generada digitalmente</div>
     </div>
   </div>
   </div>
@@ -280,6 +321,7 @@ button{
 <script>
 const OLD_KEY='agenda_consultorios_v4';
 const KEY='agenda_consultorios_v6';
+const MAX_SLOTS=4; // médicos máximos por turno (mañana / tarde) en un mismo consultorio
 
 const editor=document.getElementById('editor');
 const fecha=document.getElementById('fecha');
@@ -291,9 +333,9 @@ function formatFecha(d){
   if(!d) return '';
   const dia=DIAS[d.getDay()];
   const nro=String(d.getDate()).padStart(2,'0');
-  const mes=MESES[d.getMonth()];
+  const mesNum=String(d.getMonth()+1).padStart(2,'0');
   const anio=d.getFullYear();
-  const texto=`${dia}, ${nro} de ${mes} de ${anio}`;
+  const texto=`${dia}, ${nro}/${mesNum}/${anio}`;
   return texto.charAt(0).toUpperCase()+texto.slice(1);
 }
 
@@ -326,6 +368,8 @@ function buildTimeOptions(select,start,end,selected=''){
   if(selected && [...select.options].some(o=>o.value===selected)) select.value=selected;
 }
 
+function suffixFor(idx){ return idx===0?'':String(idx+1); }
+
 function createOffice(n,data={}){
   const box=document.createElement('div');
   box.className='office-edit';
@@ -335,49 +379,126 @@ function createOffice(n,data={}){
       Consultorio ${n}
     </div>
     <div class="turns">
-      <div class="turn morning">
+      <div class="turn morning" data-turno="manana">
         <div class="turn-head">
           <p class="turn-title">☀️ Turno mañana</p>
           <button type="button" class="btn-clear-turn" data-clear="manana">Vaciar</button>
         </div>
-        <input data-key="mananaMedico" placeholder="Nombre del médico" value="${esc(data.mananaMedico)}">
-        <div class="times">
-          <div><label>Desde</label><select data-key="mananaDesde" class="time-select" data-start="08:00" data-end="20:00"></select></div>
-          <div><label>Hasta</label><select data-key="mananaHasta" class="time-select" data-start="08:00" data-end="20:00"></select></div>
-        </div>
+        <div class="slots" data-prefix="manana"></div>
+        <button type="button" class="btn-add-slot" data-add="manana">+ Agregar médico</button>
       </div>
-      <div class="turn afternoon">
+      <div class="turn afternoon" data-turno="tarde">
         <div class="turn-head">
           <p class="turn-title">🌙 Turno tarde</p>
           <button type="button" class="btn-clear-turn" data-clear="tarde">Vaciar</button>
         </div>
-        <input data-key="tardeMedico" placeholder="Nombre del médico" value="${esc(data.tardeMedico)}">
-        <div class="times">
-          <div><label>Desde</label><select data-key="tardeDesde" class="time-select" data-start="08:00" data-end="20:00"></select></div>
-          <div><label>Hasta</label><select data-key="tardeHasta" class="time-select" data-start="08:00" data-end="20:00"></select></div>
-        </div>
+        <div class="slots" data-prefix="tarde"></div>
+        <button type="button" class="btn-add-slot" data-add="tarde">+ Agregar médico</button>
       </div>
     </div>`;
-  box.querySelectorAll('input,select').forEach(i=>i.addEventListener('input',update));
-  box.querySelectorAll('.time-select').forEach(select=>{
-    buildTimeOptions(select,select.dataset.start,select.dataset.end,data[select.dataset.key]||'');
-  });
-  box.querySelectorAll('[data-clear]').forEach(btn=>{
+  editor.appendChild(box);
+
+  function updateAddButtonState(prefix){
+    const wrap=box.querySelector(`.slots[data-prefix="${prefix}"]`);
+    const btn=box.querySelector(`.btn-add-slot[data-add="${prefix}"]`);
+    btn.style.display = wrap.children.length>=MAX_SLOTS ? 'none' : '';
+  }
+
+  function renumberSlots(prefix){
+    const wrap=box.querySelector(`.slots[data-prefix="${prefix}"]`);
+    [...wrap.children].forEach((slotDiv,idx)=>{
+      const suffix=suffixFor(idx);
+      const input=slotDiv.querySelector('input');
+      const selects=slotDiv.querySelectorAll('.time-select');
+      input.dataset.key=`${prefix}Medico${suffix}`;
+      selects[0].dataset.key=`${prefix}Desde${suffix}`;
+      selects[1].dataset.key=`${prefix}Hasta${suffix}`;
+    });
+  }
+
+  function addSlot(prefix,slotData={}){
+    const wrap=box.querySelector(`.slots[data-prefix="${prefix}"]`);
+    const idx=wrap.children.length;
+    if(idx>=MAX_SLOTS) return;
+    const suffix=suffixFor(idx);
+    const removable=idx>0;
+
+    const div=document.createElement('div');
+    div.className='slot';
+    div.innerHTML=`
+      <div class="slot-top">
+        <input data-key="${prefix}Medico${suffix}" placeholder="Nombre del médico" value="${esc(slotData.medico)}">
+        ${removable?'<button type="button" class="btn-remove-slot" title="Quitar médico">✕</button>':''}
+      </div>
+      <div class="times">
+        <div><label>Desde</label><select data-key="${prefix}Desde${suffix}" class="time-select" data-start="08:00" data-end="20:00"></select></div>
+        <div><label>Hasta</label><select data-key="${prefix}Hasta${suffix}" class="time-select" data-start="08:00" data-end="20:00"></select></div>
+      </div>`;
+    wrap.appendChild(div);
+
+    div.querySelector('input').addEventListener('input',update);
+
+    const selects=div.querySelectorAll('.time-select');
+    buildTimeOptions(selects[0],'08:00','20:00',slotData.desde||'');
+    buildTimeOptions(selects[1],'08:00','20:00',slotData.hasta||'');
+    selects.forEach(s=>s.addEventListener('input',update));
+
+    if(removable){
+      div.querySelector('.btn-remove-slot').addEventListener('click',()=>{
+        div.remove();
+        renumberSlots(prefix);
+        updateAddButtonState(prefix);
+        update();
+      });
+    }
+    updateAddButtonState(prefix);
+  }
+
+  box.querySelectorAll('.btn-add-slot').forEach(btn=>{
     btn.addEventListener('click',()=>{
-      const prefix=btn.dataset.clear; // 'manana' | 'tarde'
-      box.querySelectorAll(`input[data-key^="${prefix}"]`).forEach(input=>input.value='');
+      addSlot(btn.dataset.add,{});
       update();
     });
   });
-  editor.appendChild(box);
-}
 
-for(let i=1;i<=10;i++) createOffice(i);
+  box.querySelectorAll('.btn-clear-turn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const prefix=btn.dataset.clear;
+      const wrap=box.querySelector(`.slots[data-prefix="${prefix}"]`);
+      wrap.innerHTML='';
+      addSlot(prefix,{});
+      update();
+    });
+  });
+
+  ['manana','tarde'].forEach(prefix=>{
+    let count=0;
+    while(count<MAX_SLOTS){
+      const suffix=suffixFor(count);
+      const has = data[`${prefix}Medico${suffix}`]!==undefined ||
+                  data[`${prefix}Desde${suffix}`]!==undefined ||
+                  data[`${prefix}Hasta${suffix}`]!==undefined;
+      if(!has) break;
+      count++;
+    }
+    if(count===0) count=1;
+    for(let i=0;i<count;i++){
+      const suffix=suffixFor(i);
+      addSlot(prefix,{
+        medico:data[`${prefix}Medico${suffix}`]||'',
+        desde:data[`${prefix}Desde${suffix}`]||'',
+        hasta:data[`${prefix}Hasta${suffix}`]||''
+      });
+    }
+  });
+}
 
 function getData(){
   return [...editor.children].map((box,i)=>{
     const o={n:i+1};
-    box.querySelectorAll('input,select').forEach(input=>o[input.dataset.key]=input.value.trim());
+    box.querySelectorAll('[data-key]').forEach(el=>{
+      o[el.dataset.key]=(el.value||'').trim();
+    });
     return o;
   });
 }
@@ -390,48 +511,74 @@ function save(){
 
 function readOldData(){
   try{
-    const old=JSON.parse(localStorage.getItem(OLD_KEY)||'null');
-    return old;
+    return JSON.parse(localStorage.getItem(OLD_KEY)||'null');
   }catch(e){return null}
 }
 
-/* type: 'morning' | 'afternoon', exportMode: bool */
-function shiftHTML(doc,from,to,label,type,exportMode=false){
-  const p=exportMode?'export-':'';
+function shiftHTML(doc,from,to,label,type){
   const hasDoc=!!doc;
   const doctorText=hasDoc?esc(doc):'Sin asignar';
   const timeText=(from||to)?`${esc(from)||'—'} - ${esc(to)||'—'} hs`:'— — — —';
-  return `<div class="${p}shift">
-    <div class="${p}badge ${type}"><span class="dot"></span>${label}</div>
-    <div class="${p}doctor ${type}${hasDoc?'':' empty'}">${doctorText}</div>
-    <div class="${p}time ${type}">${timeText}</div>
+  return `<div class="shift ${type}">
+    <div class="badge ${type}"><span class="dot"></span>${label}</div>
+    <div class="doctor ${type}${hasDoc?'':' empty'}">${doctorText}</div>
+    <div class="time ${type}">${timeText}</div>
   </div>`;
+}
+
+function minutesOf(hhmm){
+  if(!hhmm) return null;
+  const [h,m]=hhmm.split(':').map(Number);
+  return h*60+m;
+}
+
+/* Lee los médicos cargados de un turno (mañana o tarde) dentro de un
+   consultorio. El primer slot siempre se conserva (aunque esté vacío,
+   para mantener la estructura visual); los siguientes solo se incluyen
+   si tienen algún dato cargado. */
+function readSlots(box,prefix,type){
+  const wrap=box.querySelector(`.slots[data-prefix="${prefix}"]`);
+  return [...wrap.children].map((div,idx)=>{
+    const medico=div.querySelector('input').value.trim();
+    const selects=div.querySelectorAll('.time-select');
+    return {medico,desde:selects[0].value,hasta:selects[1].value,type,idx};
+  }).filter(s=>s.idx===0 || s.medico || s.desde || s.hasta);
+}
+
+function sortShifts(list){
+  return list.slice().sort((a,b)=>{
+    const am=minutesOf(a.desde), bm=minutesOf(b.desde);
+    const ak=am!==null?am:(a.type==='morning'?-1:100000);
+    const bk=bm!==null?bm:(b.type==='morning'?-1:100000);
+    return ak-bk;
+  });
 }
 
 function update(){
   save();
 
   const d=fecha.value?new Date(fecha.value+'T12:00:00'):null;
-  const dateText=formatFecha(d);
+  document.getElementById('pfecha').textContent=formatFecha(d);
 
-  document.getElementById('pfecha').textContent=dateText;
-
-  const data=getData();
-  const divider='<div class="row-divider"></div>';
-
-  document.getElementById('previewRows').innerHTML=data.map(r=>`
-    <div class="row">
-      <div class="number">${r.n}</div>
-      ${shiftHTML(r.mananaMedico,r.mananaDesde,r.mananaHasta,'Mañana','morning')}
-      ${divider}
-      ${shiftHTML(r.tardeMedico,r.tardeDesde,r.tardeHasta,'Tarde','afternoon')}
-    </div>`).join('');
+  document.getElementById('previewRows').innerHTML=[...editor.children].map((box,i)=>{
+    const shifts=sortShifts([
+      ...readSlots(box,'manana','morning'),
+      ...readSlots(box,'tarde','afternoon')
+    ]);
+    const shiftsHTML=shifts.map(s=>
+      shiftHTML(s.medico,s.desde,s.hasta,s.type==='morning'?'Mañana':'Tarde',s.type)
+    ).join('');
+    return `<div class="row" style="--shifts:${shifts.length}">
+      <div class="number">${i+1}</div>
+      ${shiftsHTML}
+    </div>`;
+  }).join('');
 }
 
 function load(){
+  let saved=null;
   try{
-    let saved=JSON.parse(localStorage.getItem(KEY)||'null');
-
+    saved=JSON.parse(localStorage.getItem(KEY)||'null');
     if(!saved){
       const old=readOldData();
       if(old){
@@ -439,30 +586,14 @@ function load(){
         localStorage.setItem(KEY,JSON.stringify(old));
       }
     }
-
-    if(saved){
-      fecha.value=saved.fecha||fecha.value;
-
-      (saved.rows||[]).forEach((r,i)=>{
-        if(i<editor.children.length){
-          const box=editor.children[i];
-
-          box.querySelectorAll('input,select').forEach(input=>{
-            if(input.classList.contains('time-select')){
-              buildTimeOptions(
-                input,
-                input.dataset.start,
-                input.dataset.end,
-                r[input.dataset.key]||''
-              );
-            }else{
-              input.value=r[input.dataset.key]||'';
-            }
-          });
-        }
-      });
-    }
   }catch(e){}
+
+  editor.innerHTML='';
+  const rows=(saved && saved.rows) || [];
+  if(saved && saved.fecha) fecha.value=saved.fecha;
+  for(let i=1;i<=10;i++){
+    createOffice(i, rows[i-1]||{});
+  }
   update();
 }
 
@@ -471,8 +602,6 @@ async function makeBlob(){
     try{ await document.fonts.ready; }catch(e){}
   }
 
-  // IMPORTANTE: se exporta el mismo #card que el usuario ve en Vista previa.
-  // Ya no existe un diseño paralelo para exportación.
   const node=document.getElementById('card');
   const imgs=[...node.querySelectorAll('img')];
 
@@ -486,10 +615,9 @@ async function makeBlob(){
 
   const rect=node.getBoundingClientRect();
 
-  // Alta resolución sin cambiar proporciones ni tipografías.
-  // En escritorio genera al menos 2x; en pantallas chicas sube la escala
-  // hasta conseguir como mínimo ~1080 px de ancho.
-  const scale=Math.min(4,Math.max(2,1080/rect.width));
+  const MAX_W=1080, MAX_H=1880;
+  let scale=Math.min(MAX_W/rect.width, MAX_H/rect.height);
+  scale=Math.min(4, Math.max(1.5, scale));
 
   const canvas=await html2canvas(node,{
     scale:scale,
@@ -500,7 +628,7 @@ async function makeBlob(){
     logging:false
   });
 
-  return await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.98));
+  return await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',1));
 }
 
 async function exportJPG(){
@@ -533,8 +661,6 @@ async function mail(){
   const blob=await makeBlob();
   const file=new File([blob],'agenda_'+(fecha.value||'fecha')+'.jpg',{type:'image/jpeg'});
 
-  // En navegadores compatibles, el menú del sistema permite elegir Mail,
-  // WhatsApp u otra aplicación y entrega el JPEG como archivo adjunto.
   if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
     try{
       await navigator.share({
@@ -548,8 +674,6 @@ async function mail(){
     }
   }
 
-  // mailto no puede adjuntar archivos por sí solo: descargamos el JPEG
-  // y abrimos el correo para que pueda adjuntarse manualmente.
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download=file.name;
@@ -565,7 +689,7 @@ async function mail(){
 
 function clearAll(){
   if(!confirm('¿Borrar todos los médicos y horarios?')) return;
-  editor.querySelectorAll('input,select').forEach(i=>i.value='');
+  editor.querySelectorAll('[data-key]').forEach(el=>el.value='');
   update();
 }
 
