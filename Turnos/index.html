@@ -599,36 +599,135 @@ function load(){
 
 async function makeBlob(){
   if(document.fonts && document.fonts.ready){
-    try{ await document.fonts.ready; }catch(e){}
+    try{
+      await document.fonts.ready;
+    }catch(e){}
   }
 
-  const node=document.getElementById('card');
-  const imgs=[...node.querySelectorAll('img')];
+  const original=document.getElementById('card');
 
-  await Promise.all(imgs.map(img=>{
-    if(img.complete && img.naturalWidth) return Promise.resolve();
-    return new Promise(res=>{
-      img.onload=res;
-      img.onerror=res;
-    });
+  // Creamos una copia independiente para exportación.
+  const clone=original.cloneNode(true);
+
+  // Contenedor fuera de pantalla.
+  const exportWrap=document.createElement('div');
+
+  exportWrap.style.position='fixed';
+  exportWrap.style.left='-100000px';
+  exportWrap.style.top='0';
+  exportWrap.style.width='900px';
+  exportWrap.style.background='#fff';
+  exportWrap.style.zIndex='-1';
+  exportWrap.style.overflow='visible';
+
+  // El card SIEMPRE tendrá el mismo tamaño que en PC.
+  clone.style.width='900px';
+  clone.style.maxWidth='900px';
+  clone.style.minWidth='900px';
+  clone.style.margin='0';
+  clone.style.borderRadius='0';
+  clone.style.boxShadow='none';
+
+  // Eliminamos cualquier influencia del viewport móvil.
+  clone.querySelector('.card-head').style.height='130px';
+  clone.querySelector('.card-head').style.padding='18px 38px';
+
+  clone.querySelector('.header-pueyrredon img').style.height='58px';
+  clone.querySelector('.header-siegfried img').style.height='50px';
+
+  clone.querySelector('.rows').style.padding='4px 34px 10px';
+
+  clone.querySelectorAll('.row').forEach(row=>{
+    row.style.gridTemplateColumns='82px repeat(var(--shifts,2),1fr)';
+    row.style.columnGap='16px';
+    row.style.minHeight='96px';
+    row.style.padding='14px 0';
+  });
+
+  clone.querySelectorAll('.number').forEach(el=>{
+    el.style.fontSize='50px';
+  });
+
+  clone.querySelectorAll('.shift').forEach(el=>{
+    el.style.padding='10px 12px';
+  });
+
+  clone.querySelectorAll('.badge').forEach(el=>{
+    el.style.fontSize='12px';
+    el.style.padding='4px 11px';
+    el.style.marginBottom='8px';
+  });
+
+  clone.querySelectorAll('.doctor').forEach(el=>{
+    el.style.fontSize='20px';
+    el.style.lineHeight='24px';
+  });
+
+  clone.querySelectorAll('.time').forEach(el=>{
+    el.style.fontSize='19px';
+    el.style.marginTop='6px';
+  });
+
+  clone.querySelectorAll('.footer').forEach(el=>{
+    el.style.margin='8px 34px 26px';
+    el.style.padding='9px 14px';
+    el.style.fontSize='11px';
+  });
+
+  exportWrap.appendChild(clone);
+  document.body.appendChild(exportWrap);
+
+  // Esperamos a que las imágenes del clon estén listas.
+  const imgs=[...clone.querySelectorAll('img')];
+
+  await Promise.all(
+    imgs.map(img=>{
+      if(img.complete && img.naturalWidth){
+        return Promise.resolve();
+      }
+
+      return new Promise(resolve=>{
+        img.onload=resolve;
+        img.onerror=resolve;
+      });
+    })
+  );
+
+  // Pequeña espera para asegurar render de fuentes/layout.
+  await new Promise(resolve=>requestAnimationFrame(()=>{
+    requestAnimationFrame(resolve);
   }));
 
-  const rect=node.getBoundingClientRect();
+  const rect=clone.getBoundingClientRect();
 
-  const MAX_W=1080, MAX_H=1880;
-  let scale=Math.min(MAX_W/rect.width, MAX_H/rect.height);
-  scale=Math.min(4, Math.max(1.5, scale));
+  /*
+   * Exportación SIEMPRE basada en 900 px.
+   * No depende del ancho del teléfono.
+   */
+  const EXPORT_WIDTH=1800;
 
-  const canvas=await html2canvas(node,{
+  const scale=EXPORT_WIDTH/rect.width;
+
+  const canvas=await html2canvas(clone,{
     scale:scale,
+    width:rect.width,
+    height:rect.height,
     backgroundColor:'#fff',
     useCORS:true,
     allowTaint:false,
     imageTimeout:15000,
-    logging:false
+    logging:false,
+    scrollX:0,
+    scrollY:0,
+    windowWidth:900,
+    windowHeight:rect.height
   });
 
-  return await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',1));
+  exportWrap.remove();
+
+  return await new Promise(resolve=>{
+    canvas.toBlob(resolve,'image/jpeg',1);
+  });
 }
 
 async function exportJPG(){
