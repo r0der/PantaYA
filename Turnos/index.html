@@ -131,14 +131,22 @@ button{
 
 /* ===================== PREVIEW / EXPORT CARD (shared look) ===================== */
 .preview-title{margin:25px 0 9px;font-weight:900;font-size:15px}
-.preview-wrap{overflow:auto;padding:2px}
+
+/*
+  El wrapper escala el card completo (siempre renderizado a 900px de ancho,
+  igual que en PC) para que la vista previa en móvil sea exactamente la
+  misma composición, solo más chica — nunca un layout distinto.
+*/
+.preview-wrap{overflow:hidden;position:relative;width:100%}
+.scale-outer{width:900px;transform-origin:top left}
+
 .card{
-  width:100%;max-width:900px;margin:auto;background:#fff;border-radius:0;
+  width:900px;margin:0;background:#fff;border-radius:0;
   overflow:hidden;box-shadow:0 16px 45px rgba(23,50,74,.12)
 }
 .card-head{
   background:linear-gradient(155deg,#0b4f84,#1a7ac0);
-  color:#fff;height:130px;padding:18px 38px;position:relative;
+  color:#fff;height:130px;padding:18px 34px;position:relative;
   display:flex;align-items:center;justify-content:space-between
 }
 .header-pueyrredon{
@@ -159,34 +167,45 @@ button{
   margin:0;opacity:.96;text-align:center;white-space:nowrap
 }
 
-.rows{padding:4px 34px 10px}
+.rows{padding:4px 18px 10px}
 .row{
   display:grid;
-  grid-template-columns:82px repeat(var(--shifts,2),1fr);
-  --row-gap:16px;column-gap:var(--row-gap);
+  grid-template-columns:46px repeat(var(--shifts,2),1fr);
+  --row-gap:10px;column-gap:var(--row-gap);
   align-items:center;
   min-height:96px;padding:14px 0;
   border-bottom:1px solid var(--line)
 }
 .row:last-child{border-bottom:0}
 .number{
-  font-size:50px;font-weight:900;color:var(--blue);letter-spacing:-1.5px
+  font-size:32px;font-weight:900;color:var(--blue);letter-spacing:-1px;
+  text-align:center
 }
 /* Cada turno (mañana/tarde) tiene su propio fondo suave para distinguirse
    de un vistazo cuando hay varios médicos alternados en un consultorio */
 .shift{min-width:0;border-radius:12px;padding:10px 12px}
 .shift.morning{background:var(--morning-bg)}
 .shift.afternoon{background:var(--afternoon-bg)}
+
+.badge-row{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px}
 .badge{
   display:inline-flex;align-items:center;gap:6px;
   font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;
-  padding:4px 11px;border-radius:20px;margin-bottom:8px;background:rgba(255,255,255,.65)
+  padding:4px 11px;border-radius:20px;background:rgba(255,255,255,.65)
 }
 .badge .dot{width:6px;height:6px;border-radius:50%;flex:none}
 .badge.morning{color:var(--morning)}
 .badge.morning .dot{background:var(--morning)}
 .badge.afternoon{color:var(--afternoon)}
 .badge.afternoon .dot{background:var(--afternoon)}
+
+/* Chip neutro con el número de consultorio, al lado del chip de turno */
+.badge-office{
+  display:inline-flex;align-items:center;
+  font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;
+  padding:4px 10px;border-radius:20px;
+  background:rgba(139,152,163,.16);color:var(--muted)
+}
 
 .doctor{
   font-size:20px;font-weight:900;line-height:24px;letter-spacing:-.2px;
@@ -201,46 +220,36 @@ button{
 /* Cuando un consultorio tiene 3 o más médicos en el día, se achica un poco
    el contenido de esa fila puntual para que todo siga entrando prolijo.
    El número de consultorio NUNCA cambia de tamaño. */
-.row:has(.shift:nth-child(4)) .badge{font-size:10.5px;padding:3px 9px;margin-bottom:6px}
+.row:has(.shift:nth-child(4)) .badge-row{margin-bottom:6px}
+.row:has(.shift:nth-child(4)) .badge{font-size:10.5px;padding:3px 9px}
+.row:has(.shift:nth-child(4)) .badge-office{font-size:9.5px;padding:3px 8px}
 .row:has(.shift:nth-child(4)) .doctor{font-size:16px;line-height:19px}
 .row:has(.shift:nth-child(4)) .time{font-size:15px;margin-top:4px}
 .row:has(.shift:nth-child(4)) .shift{padding:8px 10px}
 
 .footer{
-  margin:8px 34px 26px;padding:9px 14px;background:var(--soft);
+  margin:8px 18px 26px;padding:9px 14px;background:var(--soft);
   border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px;
   color:var(--muted);font-size:11px;font-weight:700
 }
 
 /* A4 — todo el contenido tiene que entrar en una sola hoja */
+/*
+  Impresión: en vez de mantener un segundo juego de medidas en mm (que se
+  desincroniza cada vez que se ajusta el diseño de escritorio), reusamos
+  el mismo card de 900px de la vista previa / export y lo escalamos con
+  JS (ver applyPrintScale) para que entre completo en una hoja A4. Así la
+  proporción impresa es siempre idéntica a la del JPEG exportado.
+*/
 @media print{
   body{background:#fff}
+  .app{padding:0;max-width:none;margin:0}
   .app>h1,.app>.subtitle,.app>.panel,.preview-title{display:none!important}
-  .preview-wrap{padding:0;overflow:visible}
-  .card{max-width:none;width:100%;box-shadow:none;border-radius:0}
+  .preview-wrap{overflow:visible;margin:0 auto}
+  .scale-outer{transform-origin:top left}
+  .card{box-shadow:none}
 
-  .card-head{height:auto;padding:8mm 16mm 7mm}
-  .header-pueyrredon img{height:11mm}
-  .header-siegfried{gap:2mm}
-  .header-siegfried img{height:11mm}
-  .date-sub{font-size:8.5px}
-
-  .rows{padding:0 12mm}
-  .row{
-    grid-template-columns:56px repeat(var(--shifts,2),1fr);
-    --row-gap:11px;column-gap:var(--row-gap);
-    min-height:0;padding:3.4mm 0
-  }
-  .number{font-size:30px}
-  .shift{padding:2mm 2.5mm;border-radius:2mm}
-  .badge{font-size:8.5px;padding:2.5px 8px;margin-bottom:4px;gap:4px}
-  .badge .dot{width:5px;height:5px}
-  .doctor{font-size:13.5px;line-height:16px}
-  .time{font-size:12px;margin-top:2.5px}
-
-  .footer{margin:4mm 14mm 0;padding:4px 14px;font-size:8.5px}
-
-  @page{size:A4 portrait;margin:0}
+  @page{size:A4 portrait;margin:10mm}
 }
 
 @media(max-width:700px){
@@ -253,24 +262,6 @@ button{
   input[type="date"]{font-size:16px;padding-left:9px;padding-right:9px}
   .time-select{height:42px;font-size:16px;padding:0 7px}
   .times{gap:6px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-
-  .card-head{height:108px;padding:14px 18px}
-  .header-pueyrredon img{height:44px}
-  .header-siegfried{gap:5px}
-  .header-siegfried img{height:40px}
-  .date-sub{font-size:11px}
-  .rows{padding:4px 16px 8px}
-  .row{
-    grid-template-columns:52px repeat(var(--shifts,2),1fr);
-    --row-gap:10px;column-gap:var(--row-gap);
-    min-height:82px;padding:11px 0
-  }
-  .shift{padding:8px 9px}
-  .number{font-size:34px}
-  .badge{font-size:10px;padding:4px 9px;margin-bottom:6px}
-  .doctor{font-size:15px;line-height:18px}
-  .time{font-size:14.5px;margin-top:4px}
-  .footer{margin:8px 16px 16px;font-size:9.5px}
 }
 
 @media(max-width:360px){
@@ -301,19 +292,21 @@ button{
   </div>
 
   <div class="preview-title">Vista previa</div>
-  <div class="preview-wrap">
-    <div class="card" id="card">
-      <div class="card-head">
-        <div class="header-pueyrredon">
-          <img src="../Turnos/pueyrredon.png" alt="Clínica Pueyrredón">
+  <div class="preview-wrap" id="previewWrap">
+    <div class="scale-outer" id="scaleOuter">
+      <div class="card" id="card">
+        <div class="card-head">
+          <div class="header-pueyrredon">
+            <img src="../Turnos/pueyrredon.png" alt="Clínica Pueyrredón">
+          </div>
+          <div class="header-siegfried">
+            <img src="../Turnos/siegfried.png" alt="Laboratorio Siegfried">
+            <div class="date-sub" id="pfecha"></div>
+          </div>
         </div>
-        <div class="header-siegfried">
-          <img src="../Turnos/siegfried.png" alt="Laboratorio Siegfried">
-          <div class="date-sub" id="pfecha"></div>
-        </div>
+        <div class="rows" id="previewRows"></div>
+        <div class="footer">Agenda de atención generada digitalmente</div>
       </div>
-      <div class="rows" id="previewRows"></div>
-      <div class="footer">Agenda de atención generada digitalmente</div>
     </div>
   </div>
   </div>
@@ -321,7 +314,7 @@ button{
 <script>
 const OLD_KEY='agenda_consultorios_v4';
 const KEY='agenda_consultorios_v6';
-const MAX_SLOTS=4; // médicos máximos por turno (mañana / tarde) en un mismo consultorio
+const MAX_SLOTS=2; // médicos máximos por turno (mañana / tarde) en un mismo consultorio -> 1 base + 1 extra = máximo 4 por día por consultorio
 
 const editor=document.getElementById('editor');
 const fecha=document.getElementById('fecha');
@@ -423,6 +416,10 @@ function createOffice(n,data={}){
     const suffix=suffixFor(idx);
     const removable=idx>0;
 
+    // El turno tarde no necesita horarios de la mañana: acota el rango
+    // de opciones para que cargar sea más rápido y tenga sentido.
+    const range = prefix==='tarde' ? {start:'11:00',end:'20:00'} : {start:'08:00',end:'20:00'};
+
     const div=document.createElement('div');
     div.className='slot';
     div.innerHTML=`
@@ -431,16 +428,16 @@ function createOffice(n,data={}){
         ${removable?'<button type="button" class="btn-remove-slot" title="Quitar médico">✕</button>':''}
       </div>
       <div class="times">
-        <div><label>Desde</label><select data-key="${prefix}Desde${suffix}" class="time-select" data-start="08:00" data-end="20:00"></select></div>
-        <div><label>Hasta</label><select data-key="${prefix}Hasta${suffix}" class="time-select" data-start="08:00" data-end="20:00"></select></div>
+        <div><label>Desde</label><select data-key="${prefix}Desde${suffix}" class="time-select" data-start="${range.start}" data-end="${range.end}"></select></div>
+        <div><label>Hasta</label><select data-key="${prefix}Hasta${suffix}" class="time-select" data-start="${range.start}" data-end="${range.end}"></select></div>
       </div>`;
     wrap.appendChild(div);
 
     div.querySelector('input').addEventListener('input',update);
 
     const selects=div.querySelectorAll('.time-select');
-    buildTimeOptions(selects[0],'08:00','20:00',slotData.desde||'');
-    buildTimeOptions(selects[1],'08:00','20:00',slotData.hasta||'');
+    buildTimeOptions(selects[0],range.start,range.end,slotData.desde||'');
+    buildTimeOptions(selects[1],range.start,range.end,slotData.hasta||'');
     selects.forEach(s=>s.addEventListener('input',update));
 
     if(removable){
@@ -515,12 +512,15 @@ function readOldData(){
   }catch(e){return null}
 }
 
-function shiftHTML(doc,from,to,label,type){
+function shiftHTML(doc,from,to,label,type,officeNum){
   const hasDoc=!!doc;
   const doctorText=hasDoc?esc(doc):'Sin asignar';
   const timeText=(from||to)?`${esc(from)||'—'} - ${esc(to)||'—'} hs`:'— — — —';
   return `<div class="shift ${type}">
-    <div class="badge ${type}"><span class="dot"></span>${label}</div>
+    <div class="badge-row">
+      <div class="badge ${type}"><span class="dot"></span>${label}</div>
+      <div class="badge-office">Consultorio ${officeNum}</div>
+    </div>
     <div class="doctor ${type}${hasDoc?'':' empty'}">${doctorText}</div>
     <div class="time ${type}">${timeText}</div>
   </div>`;
@@ -554,6 +554,59 @@ function sortShifts(list){
   });
 }
 
+/*
+  Escala el card completo (renderizado siempre a 900px, igual que en PC)
+  en lugar de cambiar sus estilos internos. Así la vista previa en
+  pantalla, la impresión y el JPEG exportado son siempre la misma
+  composición, solo a distinta escala.
+*/
+const PX_PER_MM=96/25.4;
+
+function computeScale(maxWidthPx,maxHeightPx){
+  const card=document.getElementById('card');
+  const naturalHeight=card.offsetHeight; // no afectado por transform
+  let scale=maxWidthPx>0?Math.min(1,maxWidthPx/900):1;
+  if(maxHeightPx){
+    scale=Math.min(scale, naturalHeight>0?maxHeightPx/naturalHeight:scale);
+  }
+  return {scale,naturalHeight};
+}
+
+function applyPreviewScale(){
+  const wrap=document.getElementById('previewWrap');
+  const outer=document.getElementById('scaleOuter');
+  if(!wrap||!outer) return;
+  // Importante: primero limpiamos cualquier ancho fijo que haya quedado
+  // de una impresión anterior, y recién después medimos el ancho
+  // disponible — si no, se mide el tamaño chico usado para A4 en vez
+  // del ancho real de la pantalla.
+  wrap.style.width='';
+  const {scale,naturalHeight}=computeScale(wrap.clientWidth);
+  outer.style.transform=`scale(${scale})`;
+  wrap.style.height=(naturalHeight*scale)+'px';
+}
+window.addEventListener('resize',applyPreviewScale);
+
+/*
+  Impresión: escala el mismo card de 900px para que entre completo en una
+  hoja A4 (margen de 10mm por lado), tomando el límite más estricto entre
+  ancho y alto disponibles — así siempre entra todo en una sola hoja.
+*/
+function applyPrintScale(){
+  const wrap=document.getElementById('previewWrap');
+  const outer=document.getElementById('scaleOuter');
+  if(!wrap||!outer) return;
+  const marginMM=10, pageWidthMM=210, pageHeightMM=297;
+  const maxWidthPx=(pageWidthMM-marginMM*2)*PX_PER_MM;
+  const maxHeightPx=(pageHeightMM-marginMM*2)*PX_PER_MM;
+  const {scale,naturalHeight}=computeScale(maxWidthPx,maxHeightPx);
+  outer.style.transform=`scale(${scale})`;
+  wrap.style.width=(900*scale)+'px';
+  wrap.style.height=(naturalHeight*scale)+'px';
+}
+window.addEventListener('beforeprint',applyPrintScale);
+window.addEventListener('afterprint',applyPreviewScale);
+
 function update(){
   save();
 
@@ -561,18 +614,21 @@ function update(){
   document.getElementById('pfecha').textContent=formatFecha(d);
 
   document.getElementById('previewRows').innerHTML=[...editor.children].map((box,i)=>{
+    const officeNum=i+1;
     const shifts=sortShifts([
       ...readSlots(box,'manana','morning'),
       ...readSlots(box,'tarde','afternoon')
     ]);
     const shiftsHTML=shifts.map(s=>
-      shiftHTML(s.medico,s.desde,s.hasta,s.type==='morning'?'Mañana':'Tarde',s.type)
+      shiftHTML(s.medico,s.desde,s.hasta,s.type==='morning'?'Mañana':'Tarde',s.type,officeNum)
     ).join('');
     return `<div class="row" style="--shifts:${shifts.length}">
-      <div class="number">${i+1}</div>
+      <div class="number">${officeNum}</div>
       ${shiftsHTML}
     </div>`;
   }).join('');
+
+  requestAnimationFrame(applyPreviewScale);
 }
 
 function load(){
@@ -620,59 +676,16 @@ async function makeBlob(){
   exportWrap.style.zIndex='-1';
   exportWrap.style.overflow='visible';
 
-  // El card SIEMPRE tendrá el mismo tamaño que en PC.
+  // El card SIEMPRE se exporta a 900px: la vista previa ya se renderiza a
+  // ese mismo ancho fijo (solo se ve "escalada" visualmente en pantalla),
+  // así que no hace falta forzar ningún otro estilo acá.
   clone.style.width='900px';
   clone.style.maxWidth='900px';
   clone.style.minWidth='900px';
   clone.style.margin='0';
   clone.style.borderRadius='0';
   clone.style.boxShadow='none';
-
-  // Eliminamos cualquier influencia del viewport móvil.
-  clone.querySelector('.card-head').style.height='130px';
-  clone.querySelector('.card-head').style.padding='18px 38px';
-
-  clone.querySelector('.header-pueyrredon img').style.height='58px';
-  clone.querySelector('.header-siegfried img').style.height='50px';
-
-  clone.querySelector('.rows').style.padding='4px 34px 10px';
-
-  clone.querySelectorAll('.row').forEach(row=>{
-    row.style.gridTemplateColumns='82px repeat(var(--shifts,2),1fr)';
-    row.style.columnGap='16px';
-    row.style.minHeight='96px';
-    row.style.padding='14px 0';
-  });
-
-  clone.querySelectorAll('.number').forEach(el=>{
-    el.style.fontSize='50px';
-  });
-
-  clone.querySelectorAll('.shift').forEach(el=>{
-    el.style.padding='10px 12px';
-  });
-
-  clone.querySelectorAll('.badge').forEach(el=>{
-    el.style.fontSize='12px';
-    el.style.padding='4px 11px';
-    el.style.marginBottom='8px';
-  });
-
-  clone.querySelectorAll('.doctor').forEach(el=>{
-    el.style.fontSize='20px';
-    el.style.lineHeight='24px';
-  });
-
-  clone.querySelectorAll('.time').forEach(el=>{
-    el.style.fontSize='19px';
-    el.style.marginTop='6px';
-  });
-
-  clone.querySelectorAll('.footer').forEach(el=>{
-    el.style.margin='8px 34px 26px';
-    el.style.padding='9px 14px';
-    el.style.fontSize='11px';
-  });
+  clone.style.transform='none';
 
   exportWrap.appendChild(clone);
   document.body.appendChild(exportWrap);
@@ -788,7 +801,14 @@ async function mail(){
 
 function clearAll(){
   if(!confirm('¿Borrar todos los médicos y horarios?')) return;
-  editor.querySelectorAll('[data-key]').forEach(el=>el.value='');
+  // Reconstruimos cada consultorio desde cero: esto no solo vacía los
+  // valores, sino que también cierra cualquier slot extra que se haya
+  // agregado, dejando cada turno con un único slot vacío (igual que al
+  // abrir la app por primera vez).
+  editor.innerHTML='';
+  for(let i=1;i<=10;i++){
+    createOffice(i,{});
+  }
   update();
 }
 
