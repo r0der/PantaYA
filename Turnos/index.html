@@ -70,6 +70,22 @@ input[type="date"],input[type="time"]{
 #fecha{min-width:0;width:100%;max-width:100%;box-sizing:border-box}
 input:focus{border-color:#76add2;box-shadow:0 0 0 3px rgba(18,104,169,.09)}
 
+.doctor-select-row{display:flex;gap:6px;align-items:center;width:100%}
+.doctor-select{
+  flex:1;min-width:0;width:100%;height:38px;box-sizing:border-box;
+  border:1px solid var(--line);border-radius:9px;padding:0 9px;
+  background:#fff;color:var(--ink);font:inherit;font-size:16px;
+  outline:none;-webkit-appearance:auto;appearance:auto
+}
+.doctor-select:focus{border-color:#76add2;box-shadow:0 0 0 3px rgba(18,104,169,.09)}
+.btn-add-doctor{
+  flex:none;height:38px;border:1px solid var(--line);border-radius:9px;
+  background:#eaf2f8;color:var(--blue-dark);font-size:16px;font-weight:900;
+  padding:0 11px;cursor:pointer
+}
+.btn-add-doctor:hover{background:#dcecf7}
+
+
 .editor{display:grid;gap:10px}
 .office-edit{
   border:1px solid var(--line);border-radius:16px;padding:12px;background:#fbfcfd
@@ -362,6 +378,127 @@ function buildTimeOptions(select,start,end,selected=''){
   if(selected && [...select.options].some(o=>o.value===selected)) select.value=selected;
 }
 
+
+function escapeHtml(value){
+  return String(value)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+const DOCTORS_KEY='agenda_medicos_v1';
+
+const DEFAULT_DOCTORS=[
+  'BERCOVSKY',
+  'BESCOS',
+  'BOTTO',
+  'CASTAÑO',
+  'CHILANO',
+  'COLAVITA',
+  'DIMURO',
+  'ELICABE',
+  'ESTEVEZ',
+  'FORTUNA',
+  'GANCITANO',
+  'GOMEZ FERRANTE',
+  'GUILARDENGHI',
+  'IRIART',
+  'MACCIO',
+  'MARTINEZ R.',
+  'MEZZAPELLE',
+  'MOLINA',
+  'MOLLO',
+  'MONTOYA G.',
+  'PUENTE',
+  'RAGONESE C.',
+  'RAGONESE G.',
+  'REITOVICH',
+  'REQUINA',
+  'RESINA',
+  'RIVAROLA',
+  'STRAMAZZO',
+  'VALENTI',
+  'VILLANI',
+  'VILLARINO'
+];
+
+function sortDoctors(list){
+  return [...new Set(list.map(x=>String(x).trim()).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b,'es',{sensitivity:'base'}));
+}
+
+function getDoctors(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(DOCTORS_KEY));
+    if(Array.isArray(saved) && saved.length){
+      const sorted=sortDoctors(saved);
+      localStorage.setItem(DOCTORS_KEY,JSON.stringify(sorted));
+      return sorted;
+    }
+  }catch(e){}
+  const initial=sortDoctors(DEFAULT_DOCTORS);
+  localStorage.setItem(DOCTORS_KEY,JSON.stringify(initial));
+  return initial;
+}
+
+function saveDoctors(list){
+  localStorage.setItem(DOCTORS_KEY,JSON.stringify(sortDoctors(list)));
+}
+
+function doctorOptions(selected=''){
+  const doctors=getDoctors();
+  let html='<option value="">Seleccionar médico</option>';
+  doctors.forEach(name=>{
+    html+=`<option value="${escapeHtml(name)}"${name===selected?' selected':''}>${escapeHtml(name)}</option>`;
+  });
+  return html;
+}
+
+function refreshDoctorSelects(){
+  document.querySelectorAll('.doctor-select').forEach(select=>{
+    const current=select.value;
+    select.innerHTML=doctorOptions(current);
+    select.value=current;
+  });
+}
+
+function addDoctor(button){
+  const name=prompt('Ingrese el apellido del nuevo médico:');
+  if(name===null) return;
+
+  const clean=name.trim().replace(/\s+/g,' ');
+  if(!clean){
+    alert('Ingrese un nombre válido.');
+    return;
+  }
+
+  const list=getDoctors();
+  const exists=list.some(d=>d.localeCompare(clean,'es',{sensitivity:'base'})===0);
+
+  if(exists){
+    alert('Ese médico ya está en la lista.');
+    return;
+  }
+
+  list.push(clean);
+  saveDoctors(list);
+
+  // Actualiza todos los desplegables manteniendo sus selecciones.
+  refreshDoctorSelects();
+
+  // Selecciona el médico recién agregado solamente en el desplegable
+  // desde el cual se pulsó el botón "+".
+  const row=button.closest('.doctor-select-row');
+  const select=row ? row.querySelector('.doctor-select') : null;
+  if(select){
+    select.value=clean;
+  }
+
+  update();
+}
+
 function suffixFor(idx){ return idx===0?'':String(idx+1); }
 
 function createOffice(n,data={}){
@@ -379,7 +516,7 @@ function createOffice(n,data={}){
           <button type="button" class="btn-clear-turn" data-clear="manana">Vaciar</button>
         </div>
         <div class="slots" data-prefix="manana"></div>
-        <button type="button" class="btn-add-slot" data-add="manana">+ Agregar médico</button>
+        <button type="button" class="btn-add-slot" data-add="manana">+ Agregar turno</button>
       </div>
       <div class="turn afternoon" data-turno="tarde">
         <div class="turn-head">
@@ -387,7 +524,7 @@ function createOffice(n,data={}){
           <button type="button" class="btn-clear-turn" data-clear="tarde">Vaciar</button>
         </div>
         <div class="slots" data-prefix="tarde"></div>
-        <button type="button" class="btn-add-slot" data-add="tarde">+ Agregar médico</button>
+        <button type="button" class="btn-add-slot" data-add="tarde">+ Agregar turno</button>
       </div>
     </div>`;
   editor.appendChild(box);
@@ -402,7 +539,7 @@ function createOffice(n,data={}){
     const wrap=box.querySelector(`.slots[data-prefix="${prefix}"]`);
     [...wrap.children].forEach((slotDiv,idx)=>{
       const suffix=suffixFor(idx);
-      const input=slotDiv.querySelector('input');
+      const input=slotDiv.querySelector('.doctor-select');
       const selects=slotDiv.querySelectorAll('.time-select');
       input.dataset.key=`${prefix}Medico${suffix}`;
       selects[0].dataset.key=`${prefix}Desde${suffix}`;
@@ -425,7 +562,10 @@ function createOffice(n,data={}){
     div.className='slot';
     div.innerHTML=`
       <div class="slot-top">
-        <input data-key="${prefix}Medico${suffix}" placeholder="Nombre del médico" value="${esc(slotData.medico)}">
+        <div class="doctor-select-row">
+          <select data-key="${prefix}Medico${suffix}" class="doctor-select">${doctorOptions(slotData.medico||'')}</select>
+          <button type="button" class="btn-add-doctor" title="Agregar nuevo médico">+</button>
+        </div>
         ${removable?'<button type="button" class="btn-remove-slot" title="Quitar médico">✕</button>':''}
       </div>
       <div class="times">
@@ -434,7 +574,8 @@ function createOffice(n,data={}){
       </div>`;
     wrap.appendChild(div);
 
-    div.querySelector('input').addEventListener('input',update);
+    div.querySelector('.doctor-select').addEventListener('change',update);
+    div.querySelector('.btn-add-doctor').addEventListener('click',e=>addDoctor(e.currentTarget));
 
     const selects=div.querySelectorAll('.time-select');
     buildTimeOptions(selects[0],range.start,range.end,slotData.desde||'');
@@ -540,7 +681,7 @@ function minutesOf(hhmm){
 function readSlots(box,prefix,type){
   const wrap=box.querySelector(`.slots[data-prefix="${prefix}"]`);
   return [...wrap.children].map((div,idx)=>{
-    const medico=div.querySelector('input').value.trim();
+    const medico=div.querySelector('.doctor-select').value.trim();
     const selects=div.querySelectorAll('.time-select');
     return {medico,desde:selects[0].value,hasta:selects[1].value,type,idx};
   }).filter(s=>s.idx===0 || s.medico || s.desde || s.hasta);
