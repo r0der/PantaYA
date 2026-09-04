@@ -282,13 +282,14 @@ button{
     <div id="editor" class="editor"></div>
 
     <div class="actions">
-      <button class="primary" id="btnJpg">🖼️ Exportar JPEG</button>
-      <button class="secondary" id="btnShare">📲 WhatsApp / compartir</button>
+      <button class="primary" id="btnShare">📲 WhatsApp / compartir</button>
+      <button class="secondary" id="btnPdf">📄 Exportar PDF</button>
+      <button class="secondary" id="btnJpg">🖼️ Exportar JPEG</button>
       <button class="secondary" id="btnMail">✉️ Email</button>
       <button class="secondary" onclick="window.print()">🖨️ Imprimir A4</button>
       <button class="danger" id="btnClear">Limpiar</button>
     </div>
-    <div class="hint">La imagen exportada conserva exactamente el diseño de la vista previa, en alta resolución.</div>
+    <div class="hint">El PDF y la imagen conservan exactamente el diseño de la vista previa, en alta resolución. Para WhatsApp, el PDF llega más nítido porque no se recomprime como una foto.</div>
   </div>
 
   <div class="preview-title">Vista previa</div>
@@ -305,7 +306,7 @@ button{
           </div>
         </div>
         <div class="rows" id="previewRows"></div>
-        <div class="footer">Agenda de atención generada digitalmente</div>
+        <div class="footer">Cronograma de atención digital · Laboratorios Siegfried</div>
       </div>
     </div>
   </div>
@@ -646,14 +647,16 @@ function load(){
 
   editor.innerHTML='';
   const rows=(saved && saved.rows) || [];
-  if(saved && saved.fecha) fecha.value=saved.fecha;
+  // La fecha NUNCA se restaura del caché: siempre debe mostrar el día
+  // actual al entrar, así no hay que actualizarla a mano. Los médicos y
+  // horarios sí se mantienen guardados.
   for(let i=1;i<=10;i++){
     createOffice(i, rows[i-1]||{});
   }
   update();
 }
 
-async function makeBlob(){
+async function renderCanvas(){
   if(document.fonts && document.fonts.ready){
     try{
       await document.fonts.ready;
@@ -738,13 +741,48 @@ async function makeBlob(){
 
   exportWrap.remove();
 
+  return canvas;
+}
+
+async function makeJpgBlob(){
+  const canvas=await renderCanvas();
   return await new Promise(resolve=>{
     canvas.toBlob(resolve,'image/jpeg',1);
   });
 }
 
+/*
+  WhatsApp (y otras apps) recomprimen mucho las fotos que se envían como
+  imagen, así que el texto queda borroso. Un PDF se manda como documento
+  y no se recomprime, por eso conviene para compartir. Armamos una sola
+  página con el tamaño exacto de la agenda (sin franjas en blanco).
+*/
+async function makePdfBlob(){
+  const canvas=await renderCanvas();
+  const imgData=canvas.toDataURL('image/png');
+  const {jsPDF}=window.jspdf;
+  const widthMM=190;
+  const heightMM=widthMM*(canvas.height/canvas.width);
+  const pdf=new jsPDF({
+    orientation: heightMM>=widthMM?'portrait':'landscape',
+    unit:'mm',
+    format:[widthMM,heightMM]
+  });
+  pdf.addImage(imgData,'PNG',0,0,widthMM,heightMM);
+  return pdf.output('blob');
+}
+
+async function exportPDF(){
+  const blob=await makePdfBlob();
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='agenda_'+(fecha.value||'fecha')+'.pdf';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
 async function exportJPG(){
-  const blob=await makeBlob();
+  const blob=await makeJpgBlob();
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='agenda_'+(fecha.value||'fecha')+'.jpg';
@@ -752,10 +790,24 @@ async function exportJPG(){
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 
+/*
+  El share nativo del sistema operativo (navigator.share) funciona bien
+  en celulares, pero en PC (Windows/Mac) suele fallar o mostrar un error
+  del navegador ("no fue posible mostrarte todas las formas de
+  compartir") porque el sistema no tiene apps registradas para recibir
+  archivos compartidos. Por eso en PC vamos directo a descargar el
+  archivo en vez de intentar el share nativo.
+*/
+function isMobileDevice(){
+  const uaMobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  const coarsePointer=window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
+  return uaMobile || ((navigator.maxTouchPoints||0)>0 && coarsePointer);
+}
+
 async function share(){
-  const blob=await makeBlob();
-  const file=new File([blob],'agenda.jpg',{type:'image/jpeg'});
-  if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+  const blob=await makePdfBlob();
+  const file=new File([blob],'agenda_'+(fecha.value||'fecha')+'.pdf',{type:'application/pdf'});
+  if(isMobileDevice() && navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
     try{
       await navigator.share({
         title:'Agenda de consultorios',
@@ -763,17 +815,19 @@ async function share(){
         files:[file]
       });
       return;
-    }catch(e){}
+    }catch(e){
+      if(e.name==='AbortError') return;
+    }
   }
-  await exportJPG();
-  alert('La imagen fue descargada. Podés adjuntarla desde WhatsApp.');
+  await exportPDF();
+  alert('El PDF fue descargado. Podés adjuntarlo desde WhatsApp como documento.');
 }
 
 async function mail(){
-  const blob=await makeBlob();
-  const file=new File([blob],'agenda_'+(fecha.value||'fecha')+'.jpg',{type:'image/jpeg'});
+  const blob=await makePdfBlob();
+  const file=new File([blob],'agenda_'+(fecha.value||'fecha')+'.pdf',{type:'application/pdf'});
 
-  if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+  if(isMobileDevice() && navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
     try{
       await navigator.share({
         title:'Agenda de consultorios',
@@ -813,6 +867,7 @@ function clearAll(){
 }
 
 fecha.addEventListener('input',update);
+document.getElementById('btnPdf').addEventListener('click',exportPDF);
 document.getElementById('btnJpg').addEventListener('click',exportJPG);
 document.getElementById('btnShare').addEventListener('click',share);
 document.getElementById('btnMail').addEventListener('click',mail);
@@ -821,5 +876,7 @@ document.getElementById('btnClear').addEventListener('click',clearAll);
 load();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 </body>
 </html>
